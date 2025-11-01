@@ -1,4 +1,11 @@
 <?php
+
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+
 // Common layout file for all pages
 // This file provides the HTML structure and includes common elements
 
