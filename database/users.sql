@@ -20,8 +20,12 @@ CREATE TABLE users (
 );
 
 -- Update uploads table to reference users
-ALTER TABLE uploads ADD COLUMN user_id INT NULL;
-ALTER TABLE uploads ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE uploads 
+ADD COLUMN user_id INT NULL AFTER filename;
+ALTER TABLE uploads 
+ADD CONSTRAINT fk_user_id 
+FOREIGN KEY (user_id) REFERENCES users(id) 
+ON DELETE CASCADE;
 
 -- Create referrals table to track referral relationships
 CREATE TABLE referrals (
