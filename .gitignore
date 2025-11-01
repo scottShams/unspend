@@ -1,0 +1,36 @@
+# Composer
+/vendor/
+/composer.lock
+
+# Logs and cache
+*.log
+*.cache
+*.tmp
+cache/
+tmp/
+
+# Environment file
+.env
+.env.local
+.env.*.local
+
+# PHPStorm / IDE files
+.idea/
+*.iml
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Node / frontend (if used)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# PHPUnit / test coverage
+coverage/
+.phpunit.result.cache
+
+# Uploads (optional if you don't want to track user uploads)
+uploads/

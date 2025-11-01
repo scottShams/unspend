@@ -1,0 +1,13 @@
+{
+    "require": {
+        "smalot/pdfparser": "^2.12",
+        "guzzlehttp/guzzle": "^7.10",
+        "openai-php/client": "^0.17.1",
+        "phpmailer/phpmailer": "^7.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}
