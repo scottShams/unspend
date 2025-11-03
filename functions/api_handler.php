@@ -49,7 +49,7 @@ function getApiKey(){
     return Env::get('OPENAI_API_KEY');
 }
 
-function callOpenAIAPIWithRetry($rawStatement)
+function callOpenAIAPI($rawStatement)
 {
     $apiKey = getApiKey();
 
@@ -155,6 +155,81 @@ function callOpenAIAPIWithRetry($rawStatement)
     }
 }
 
+function callOpenAIAPIWithRetry($rawStatement){
+    $maxRetries = 3;
+    $wait = 2;
+    $apiKey = getApiKey();
+    $client = OpenAI::client($apiKey);
+
+    for ($i = 1; $i <= $maxRetries; $i++) {
+        try {
+            $response = $client->chat()->create([
+                'model' => 'gpt-4o-mini',
+                'response_format' => [
+                    'type' => 'json_schema',
+                    'json_schema' => [
+                        'name' => 'bank_statement_analysis',
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'summary' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'totalSpent' => ['type' => 'number'],
+                                        'totalCredit' => ['type' => 'number'],
+                                        'totalDiscretionaryLeaks' => ['type' => 'number'],
+                                        'statementPeriod' => [
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'startDate' => ['type' => 'string'],
+                                                'endDate' => ['type' => 'string']
+                                            ],
+                                            'required' => ['startDate', 'endDate']
+                                        ]
+                                    ],
+                                    'required' => [
+                                        'totalSpent',
+                                        'totalCredit',
+                                        'totalDiscretionaryLeaks',
+                                        'statementPeriod'
+                                    ]
+                                ],
+                                'categorizedExpenses' => [
+                                    'type' => 'array',
+                                    'items' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'category' => ['type' => 'string'],
+                                            'amount' => ['type' => 'number'],
+                                            'isLeak' => ['type' => 'boolean']
+                                        ],
+                                        'required' => ['category', 'amount', 'isLeak']
+                                    ]
+                                ]
+                            ],
+                            'required' => ['summary', 'categorizedExpenses']
+                        ]
+                    ]
+                ],
+                'messages' => [
+                    ['role' => 'system', 'content' => 'You are a financial summary assistant. Return concise JSON only.'],
+                    ['role' => 'user', 'content' => "Analyze this CSV of transactions:\n\n{$rawStatement}"]
+                ],
+            ]);
+
+            $json = $response->choices[0]->message->content;
+            return json_decode($json, true);
+
+        } catch (Exception $e) {
+            if ($i === $maxRetries) {
+                throw new Exception("OpenAI API failed after $maxRetries attempts: " . $e->getMessage());
+            }
+            sleep($wait);
+            $wait *= 2; // exponential backoff
+        }
+    }
+
+}
 function generateBlueprintWithOpenAI($analysisData, $userInfo = null) {
     $apiKey = getApiKey();
     // Initialize OpenAI client
