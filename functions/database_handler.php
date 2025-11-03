@@ -12,7 +12,11 @@ function getPDO() {
 }
 
 function saveAnalysisToDatabase($pdo, $targetFile, $userId, $analysisJson) {
-    if (!$pdo) {
+    try {
+        if (!$pdo || !$pdo->query('SELECT 1')) {
+            $pdo = getPDO();
+        }
+    } catch (Exception $e) {
         $pdo = getPDO();
     }
     require_once 'user_management.php';

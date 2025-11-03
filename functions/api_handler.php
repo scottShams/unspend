@@ -7,7 +7,13 @@ require_once __DIR__ . '/../config/env.php';
 function callGeminiAPI($rawStatement, $pdo, $userId, $filename) {
     // Get fresh PDO connection from database_handler.php
     require_once 'database_handler.php';
-    $pdo = getPDO();
+    try {
+        if (!$pdo || !$pdo->query('SELECT 1')) {
+            $pdo = getPDO();
+        }
+    } catch (Exception $e) {
+        $pdo = getPDO();
+    }
 
     // First, check if user has already uploaded this exact file
     $existingAnalysis = checkExistingAnalysis($pdo, $userId, $filename, $rawStatement);
