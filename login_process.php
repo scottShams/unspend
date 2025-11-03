@@ -84,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_authorized'] = true;
             $_SESSION['user_email'] = $existingUser['email'];
             $_SESSION['user_name'] = $existingUser['name'];
+            $_SESSION['user_income'] = $existingUser['income'];
 
             echo json_encode([
                 'success' => true,
@@ -147,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_authorized'] = true;
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_name'] = $user['name'];
+        $_SESSION['user_income'] = $user['income'];
 
         // Redirect after login
         $redirectUrl = $_SESSION['redirect_after_login'] ?? 'dashboard.php';

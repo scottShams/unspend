@@ -36,6 +36,17 @@ if (!empty($refToken)) {
         // Store referrer info in session for later use during registration
         $_SESSION['referrer_id'] = $referrer['id'];
         $_SESSION['referrer_token'] = $refToken;
+
+        // Track the click if not already tracked in this session
+        if (!isset($_SESSION['referral_tracked'])) {
+            $userManager->trackReferralClick(
+                $referrer['id'],
+                $_SERVER['REMOTE_ADDR'] ?? null,
+                $_SERVER['HTTP_USER_AGENT'] ?? null,
+                session_id()
+            );
+            $_SESSION['referral_tracked'] = true;
+        }
     }
 }
 
