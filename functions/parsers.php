@@ -22,7 +22,7 @@ function parseBankStatement($filePath, $fileType) {
     }
 
     // return parseTransactions($text);
-    return parseTransactionsAI($text);
+    return parseTransactionsAIinChunks($text);
 }
 
 function parseTransactions($text) {
@@ -141,6 +141,72 @@ function parseTransactionsAI($text)
         throw new Exception("AI parsing failed: " . $e->getMessage());
     }
 }
+
+function parseTransactionsAIinChunks($text)
+{
+    $apiKey = Env::get('OPENAI_API_KEY');
+    $client = new Client([
+        'base_uri' => 'https://api.openai.com/v1/',
+        'timeout'  => 120, // increased slightly
+    ]);
+
+    // Split text into 5000-character chunks to prevent timeouts
+    $chunks = str_split($text, 5000);
+    $allTransactions = [];
+
+    foreach ($chunks as $index => $chunk) {
+        $prompt = "
+        You are a financial transaction parser. 
+        Extract transactions from this text into valid JSON: 
+        {\"transactions\": [{\"date\": \"YYYY-MM-DD\", \"description\": \"string\", \"debit\": number, \"credit\": number, \"balance\": number|null}]}
+
+        TEXT CHUNK #{$index}:
+        ----------------
+        $chunk
+        ----------------
+        ";
+
+        try {
+            $response = $client->post('chat/completions', [
+                'headers' => [
+                    'Authorization' => "Bearer $apiKey",
+                    'Content-Type'  => 'application/json',
+                ],
+                'json' => [
+                    'model' => 'gpt-4o-mini',
+                    'temperature' => 0,
+                    'messages' => [
+                        ['role' => 'system', 'content' => 'Extract clean JSON only.'],
+                        ['role' => 'user', 'content' => $prompt]
+                    ],
+                    'response_format' => ['type' => 'json_object'],
+                ],
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+            $jsonOutput = $result['choices'][0]['message']['content'] ?? '';
+            $data = json_decode($jsonOutput, true);
+
+            if (!empty($data['transactions'])) {
+                $allTransactions = array_merge($allTransactions, $data['transactions']);
+            }
+
+        } catch (Exception $e) {
+            // Log and continue — don’t fail the whole process
+            file_put_contents(__DIR__ . '/../logs/ai_parser_errors.log', "Chunk $index failed: " . $e->getMessage() . "\n", FILE_APPEND);
+        }
+
+        // Delay slightly between requests to avoid rate limits
+        usleep(300000); // 0.3 sec
+    }
+
+    if (empty($allTransactions)) {
+        throw new Exception("No transactions parsed from any chunk.");
+    }
+
+    return $allTransactions;
+}
+
 
 function processTransaction($currentTransaction) {
     $fullText = implode(' ', $currentTransaction);
