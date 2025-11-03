@@ -26,7 +26,7 @@
         <!-- Show when logged out -->
         <a href="login.php"
         class="<?php echo ($current_page == 'login.php') ? 'text-amber-500' : 'text-gray-600'; ?> hover:text-amber-500 transition duration-150 font-medium block md:inline">
-            Dashboard Logins
+            Login
         </a>
     <?php endif; ?>
 
