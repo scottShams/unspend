@@ -152,43 +152,28 @@ function parseTransactionsAIinChunks($text)
     $apiKey = Env::get('OPENAI_API_KEY');
     $client = new Client([
         'base_uri' => 'https://api.openai.com/v1/',
-        'timeout'  => 120, // increased slightly
+        'timeout'  => 120,
     ]);
 
     // Split text into 5000-character chunks to prevent timeouts
-    $chunks = str_split($text, 5000);
+    $chunks = str_split($text, 2000);
     $allTransactions = [];
 
     foreach ($chunks as $index => $chunk) {
         $prompt = "
-        You are a financial transaction parser and analyst. 
-        Your task is to extract **only transactions from the most recent 30 days** found in the text below. 
-        Ignore all older entries.
+        Extract ONLY transactions from the most recent 30 days in this text.
+        Output strict JSON:
+        {\"transactions\":[{\"date\":\"YYYY-MM-DD\",\"description\":\"string\",\"debit\":number,\"credit\":number,\"balance\":number|null}]}
 
-        Output must be valid JSON in this structure:
-        {
-        \"transactions\": [
-            {
-            \"date\": \"YYYY-MM-DD\",
-            \"description\": \"string\",
-            \"debit\": number,
-            \"credit\": number,
-            \"balance\": number | null
-            }
-        ]
-        }
+        Rules:
+        - Include transactions within last 30 days of latest date in text.
+        - Ignore summaries/non-transactions.
+        - Normalize dates to YYYY-MM-DD.
 
-        IMPORTANT RULES:
-        - Only include transactions dated within the last 30 days of the document's most recent date.
-        - Skip any lines or summary data not representing actual transactions.
-        - If no clear date format is present, infer from context.
-        - Ensure dates are normalized to YYYY-MM-DD format.
-
-        TEXT CHUNK #{$index}:
-        ----------------
+        CHUNK #{$index}:
         $chunk
-        ----------------
         ";
+
 
         try {
             $response = $client->post('chat/completions', [
