@@ -27,6 +27,18 @@ ADD CONSTRAINT fk_user_id
 FOREIGN KEY (user_id) REFERENCES users(id) 
 ON DELETE CASCADE;
 
+-- Create referral_clicks table to track anonymous clicks
+CREATE TABLE referral_clicks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    referrer_id INT NOT NULL,
+    ip_address VARCHAR(45) NULL,
+    user_agent TEXT NULL,
+    session_id VARCHAR(255) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (referrer_id) REFERENCES users(id),
+    INDEX idx_referrer_created (referrer_id, created_at)
+);
+
 -- Create referrals table to track referral relationships
 CREATE TABLE referrals (
     id INT AUTO_INCREMENT PRIMARY KEY,
