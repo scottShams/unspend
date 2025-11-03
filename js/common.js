@@ -2,8 +2,35 @@
 
 // Modal Control Functions
 window.openModal = function(id) {
-    document.getElementById(id).classList.remove('hidden');
-    document.body.style.overflow = 'hidden'; // Prevent scrolling background
+    // Check analysis limit before opening upload modal
+    if (id === 'uploadModal' || id === 'contactModal') {
+        fetch('get_session.php')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Analysis Count:', data.analysis_count);
+                if (data.analysis_count >= 3) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Analysis Limit Reached',
+                        text: 'You have already analyzed 3 PDFs. Please upgrade to continue.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                // Proceed to open modal
+                document.getElementById(id).classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling background
+            })
+            .catch(error => {
+                console.error('Error checking analysis count:', error);
+                // Proceed to open modal on error
+                document.getElementById(id).classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+    } else {
+        document.getElementById(id).classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling background
+    }
 };
 
 window.closeModal = function(id) {
