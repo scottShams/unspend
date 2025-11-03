@@ -30,6 +30,14 @@ if (!$referrer) {
 $_SESSION['referrer_id'] = $referrer['id'];
 $_SESSION['referrer_token'] = $referralToken;
 
+// Track the click in the referral_clicks table
+$userManager->trackReferralClick(
+    $referrer['id'],
+    $_SERVER['REMOTE_ADDR'] ?? null,
+    $_SERVER['HTTP_USER_AGENT'] ?? null,
+    session_id()
+);
+
 // Redirect to index page (landing page) where user can register
 header('Location: index.php?ref=' . $referralToken);
 exit;

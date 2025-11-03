@@ -27,7 +27,7 @@ class UserManagement {
                 $stmt->execute([$email, $name, $password ?: '', $income, $referralToken, $verificationToken]);
                 $userId = $this->pdo->lastInsertId();
 
-                // If referrer exists, create referral relationship
+                // If referrer exists, create or update referral relationship
                 if ($referrerId) {
                     $this->createReferral($referrerId, $userId);
                 }
@@ -88,6 +88,17 @@ class UserManagement {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getCompletedAnalysisCount($userId) {
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) as count
+            FROM uploads
+            WHERE user_id = ? AND analysis_result IS NOT NULL
+        ");
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['count'];
+    }
+
     public function getLatestAnalysis($userId) {
         $stmt = $this->pdo->prepare("
             SELECT id, filename, upload_date, analysis_result, blueprint_result
@@ -143,6 +154,16 @@ class UserManagement {
         return $stmt->execute([$userId]);
     }
 
+    public function trackReferralClick($referrerId, $ipAddress = null, $userAgent = null, $sessionId = null) {
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO referral_clicks (referrer_id, ip_address, user_agent, session_id) VALUES (?, ?, ?, ?)");
+            return $stmt->execute([$referrerId, $ipAddress, $userAgent, $sessionId]);
+        } catch (PDOException $e) {
+            // Handle duplicate or other errors silently
+            return false;
+        }
+    }
+
     public function createReferral($referrerId, $referredUserId) {
         try {
             $stmt = $this->pdo->prepare("INSERT INTO referrals (referrer_id, referred_user_id) VALUES (?, ?)");
@@ -159,17 +180,17 @@ class UserManagement {
     }
 
     public function getReferralStats($userId) {
-        // Get total referrals (clicks)
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) as total_clicks FROM referrals WHERE referrer_id = ?");
+        // Get total clicks from referral_clicks table
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) as total_clicks FROM referral_clicks WHERE referrer_id = ?");
         $stmt->execute([$userId]);
         $totalClicks = $stmt->fetch(PDO::FETCH_ASSOC)['total_clicks'];
 
-        // Get pending referrals
+        // Get pending referrals - users who registered but haven't completed blueprint
         $stmt = $this->pdo->prepare("SELECT COUNT(*) as pending FROM referrals WHERE referrer_id = ? AND status = 'pending'");
         $stmt->execute([$userId]);
         $pending = $stmt->fetch(PDO::FETCH_ASSOC)['pending'];
 
-        // Get completed referrals
+        // Get completed referrals - users who completed blueprint
         $stmt = $this->pdo->prepare("SELECT COUNT(*) as completed FROM referrals WHERE referrer_id = ? AND status = 'completed'");
         $stmt->execute([$userId]);
         $completed = $stmt->fetch(PDO::FETCH_ASSOC)['completed'];
@@ -186,8 +207,8 @@ class UserManagement {
         $stmt = $this->pdo->prepare("
             SELECT r.status, r.created_at, r.completed_at, u.name, u.email
             FROM referrals r
-            JOIN users u ON r.referred_user_id = u.id
-            WHERE r.referrer_id = ?
+            LEFT JOIN users u ON r.referred_user_id = u.id
+            WHERE r.referrer_id = ? AND r.referred_user_id IS NOT NULL
             ORDER BY r.created_at DESC
         ");
         $stmt->execute([$userId]);
