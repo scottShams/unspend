@@ -231,6 +231,8 @@ function callOpenAIAPIWithRetry($rawStatement){
 
 }
 function generateBlueprintWithOpenAI($analysisData, $userInfo = null) {
+    $analysisData = preg_replace('/\s+/', ' ', $analysisData); // remove extra whitespace
+
     $apiKey = getApiKey();
     // Initialize OpenAI client
     $client = OpenAI::client($apiKey);
@@ -310,40 +312,29 @@ function generateBlueprintWithOpenAI($analysisData, $userInfo = null) {
                 [
                     'role' => 'system',
                     'content' => <<<EOT
-                You are a premier wealth building expert and financial advisor. Your task is to analyze spending data and create a comprehensive wealth blueprint based on proven financial principles.
-
-                CORE WEALTH BUILDING PRINCIPLES TO FOLLOW:
-                1. **50/30/20 Rule**: 50% Needs, 30% Wants, 20% Savings/Investments
-                2. **Emergency Fund**: 3-6 months of expenses saved first
-                3. **Debt Management**: High-interest debt elimination priority
-                4. **Investment Strategy**: Consistent investing (20% of income minimum)
-                5. **Behavioral Finance**: Address spending psychology and habits
-
-                ANALYZE the provided spending data and create a personalized blueprint that:
-                - Identifies spending leaks and improvement opportunities
-                - Provides step-by-step action plan for wealth building
-                - Sets realistic monthly targets based on current financial situation
-                - Uses behavioral psychology to encourage positive financial habits
-                - Focuses on sustainable, long-term wealth accumulation
-
-                Return structured JSON with actionable, specific recommendations.
+                You are a wealth-building financial advisor.
+                Based on provided spending analysis, create a JSON plan that:
+                - Allocates income by the 50/30/20 rule (Needs/Wants/Savings).
+                - Recommends 3–5 improvement areas (where to cut and save).
+                - Generates 3–6 clear action steps with estimated savings.
+                - Suggests monthly targets for emergency fund, investment, and debt reduction.
+                Return valid JSON only, following the schema.
                 EOT
-                                ],
-                                [
-                                    'role' => 'user',
-                                    'content' => <<<EOT
-                Analyze this spending analysis data and create a comprehensive wealth blueprint:
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => <<<EOT
+                Analyze this financial summary and produce a structured wealth blueprint:
 
-                ANALYSIS DATA:
+                DATA:
                 {$analysisData}
 
-                USER INFORMATION:
+                USER INFO (if available):
                 {$userInfo}
-
-                Create a detailed wealth blueprint with specific action steps, savings targets, and improvement recommendations based on proven financial principles.
                 EOT
-                ],
+                ]
             ],
+
         ]);
 
         // Parse the clean JSON result
