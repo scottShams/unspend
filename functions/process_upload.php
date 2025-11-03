@@ -99,6 +99,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["bankStatementFile"]))
             // Store in session
             $_SESSION['analysisData'] = $analysisData;
 
+            // Set a longer execution time for processing
+            set_time_limit(300); // 5 minutes
+
             if ($isAjax) {
                 echo json_encode(['success' => true]);
             } else {

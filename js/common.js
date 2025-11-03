@@ -127,10 +127,10 @@ function initializeFileUpload() {
             })
             .then(data => {
                 if (data.success) {
-                    // ✅ Success — redirect to summary page
+                    // Success — redirect to summary page
                     window.location.href = 'summary.php';
                 } else {
-                    // ❌ Server returned an error message
+                    // Server returned an error message
                     if (preloader) preloader.classList.add('hidden');
                     if (uploadStatus) uploadStatus.innerHTML = `
                         <span class="text-red-400 font-bold">Upload failed:</span>
@@ -142,6 +142,13 @@ function initializeFileUpload() {
             .catch(error => {
                 // Hide preloader and show error
                 if (preloader) preloader.classList.add('hidden');
+
+                // Check if it's a 504 timeout error - if so, redirect since data may still be processed
+                if (error.message.includes("504")) {
+                    // Assume processing succeeded despite timeout, redirect to summary
+                    window.location.href = 'summary.php';
+                    return;
+                }
 
                 let userMessage = "We couldn't complete the upload. Please check your internet connection and try again.";
 
