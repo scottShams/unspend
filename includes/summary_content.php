@@ -128,7 +128,7 @@
                 </div>
 
                 <!-- Call to Action for Blueprint -->
-                <div class="mt-16 text-center bg-purple-50 p-8 rounded-xl shadow-2xl border-4 border-violet-700">
+                <div id="blueprintCTA" class="mt-16 text-center bg-purple-50 p-8 rounded-xl shadow-2xl border-4 border-violet-700">
                     <h3 class="text-3xl font-bold text-violet-800 mb-4">Ready for the Action Plan?</h3>
                     <p class="text-xl text-gray-700 mb-6">Your data is ready, but a basic summary won't save you money. Unlock the **Wealth Blueprint** for personalized, step-by-step instructions on eliminating those spending leaks.</p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">

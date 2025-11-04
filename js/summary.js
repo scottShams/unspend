@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const historySection = document.getElementById('historySection');
     const analysisSection = document.getElementById('analysisSection');
     const backToHistory = document.getElementById('backToHistory');
+    const unlockBtn = document.getElementById('unlockBlueprintBtn');
 
     // Initialize file upload functionality for summary page
     initializeFileUpload();
@@ -167,6 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
         historyTab.addEventListener('click', () => {
             if (historySection) historySection.classList.remove('hidden');
             if (analysisSection) analysisSection.classList.add('hidden');
+            // Hide unlock button when showing history
+            if (unlockBtn) unlockBtn.style.display = 'none';
         });
     }
 
@@ -174,6 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
         analysisTab.addEventListener('click', () => {
             if (historySection) historySection.classList.add('hidden');
             if (analysisSection) analysisSection.classList.remove('hidden');
+            // Show unlock button when showing single analysis
+            if (unlockBtn) unlockBtn.style.display = 'inline-block';
             ensureSectionVisible(renderSummaryPage);
         });
     }
@@ -185,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Blueprint unlock button event listener
-    const unlockBtn = document.getElementById('unlockBlueprintBtn');
     if (unlockBtn) {
         unlockBtn.addEventListener('click', unlockBlueprint);
     }
@@ -212,7 +216,15 @@ function loadAnalysis(analysisId) {
                 currentAnalysisId: analysisId
             };
 
-            document.getElementById('analysisTab').click();
+            // Show analysis section and unlock button
+            const historySection = document.getElementById('historySection');
+            const analysisSection = document.getElementById('analysisSection');
+            const unlockBtn = document.getElementById('unlockBlueprintBtn');
+
+            if (historySection) historySection.classList.add('hidden');
+            if (analysisSection) analysisSection.classList.remove('hidden');
+            if (unlockBtn) unlockBtn.style.display = 'inline-block';
+
             renderSummaryPage();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         })
