@@ -122,7 +122,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["bankStatementFile"]))
             }
             exit();
         } catch (Exception $e) {
-            $error = "Oops, we failed to analyze your file. Please try again.";
+            // Show meaningful validation errors directly, generic message for technical errors
+            $exceptionMessage = $e->getMessage();
+            if (strpos($exceptionMessage, "The uploaded file does not appear to be a valid bank statement") !== false ||
+                strpos($exceptionMessage, "No transactions parsed") !== false) {
+                $error = $exceptionMessage;
+            } else {
+                $error = "Oops, we failed to analyze your file. Please try again.";
+            }
             if ($isAjax) {
                 echo json_encode(['success' => false, 'message' => $error]);
             } else {
