@@ -216,6 +216,9 @@ function renderBlueprintChart() {
     const wantsElement = document.getElementById('wantsActual');
     const saveElement = document.getElementById('saveActual');
 
+    // Get currency from PHP
+    const currency = '<?php echo $currency ?? "USD"; ?>';
+
     if (!needsElement || !wantsElement || !saveElement) {
         console.error('Chart data elements not found');
         return;
@@ -354,10 +357,10 @@ async function generatePdf() {
 }
 
 // Utility function to format currency
-function formatCurrency(amount) {
+function formatCurrency(amount, currency = 'USD') {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'USD'
+        currency: currency
     }).format(amount);
 }
 

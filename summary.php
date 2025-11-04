@@ -34,6 +34,13 @@ ob_start();
 include 'includes/summary_content.php';
 $content = ob_get_clean();
 
+// Get currency from latest analysis if available
+$currency = 'USD'; // default
+if ($latestAnalysis && !empty($latestAnalysis['analysis_result'])) {
+    $analysisData = json_decode($latestAnalysis['analysis_result'], true);
+    $currency = $analysisData['summary']['currency'] ?? 'USD';
+}
+
 // Custom scripts for summary page
 $customScripts = '<script>
 // Initialize analysisData from PHP session if available
@@ -45,10 +52,12 @@ if (typeof window.analysisData !== "undefined") {
     window.analysisData.expenses = combineExpenses(' . json_encode($_SESSION['analysisData']['categorizedExpenses'] ?? []) . ');
     window.analysisData.statementPeriod = ' . json_encode($_SESSION['analysisData']['summary']['statementPeriod'] ?? null) . ';
     window.analysisData.currentAnalysisId = ' . ($latestAnalysis['id'] ?? 'null') . ';
+    window.analysisData.currency = "' . ($_SESSION['analysisData']['summary']['currency'] ?? 'USD') . '";
 }
 ' : '') . '
-// Set latest analysis ID for auto-loading
+// Set latest analysis ID for auto-loading and currency
 window.latestAnalysisId = ' . ($latestAnalysis['id'] ?? 'null') . ';
+window.currency = "' . $currency . '";
 </script>';
 
 // Override JavaScript file

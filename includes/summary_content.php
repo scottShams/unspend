@@ -7,7 +7,7 @@
                 <!-- Include footer modals for upload functionality -->
                 <?php include 'footer.php'; ?>
                 <h1 class="text-5xl font-extrabold text-gray-900 text-center mb-4"><?php echo htmlspecialchars($userName); ?>'s Expense Summary</h1>
-                <p class="text-center mb-4"><?php echo htmlspecialchars($userName); ?>'s Estimated Monthly Income: <?php echo htmlspecialchars($userIncome); ?></p>
+                <p class="text-center mb-4"><?php echo htmlspecialchars($userName); ?>'s Estimated Monthly Income: <span id="userIncomeDisplay"><?php echo htmlspecialchars($userIncome); ?></span></p>
                 <!-- Navigation Tabs -->
                 <div class="flex justify-center mb-8 hidden">
                     <div class="bg-white rounded-lg shadow-md p-1">

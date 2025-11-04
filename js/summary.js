@@ -7,6 +7,36 @@ window.analysisData = {
     chartInstance: null,
     currentAnalysisId: null
 };
+// Function to get currency symbol
+function getCurrencySymbol(currency) {
+    const symbols = {
+        'USD': '$',
+        'EUR': '€',
+        'GBP': '£',
+        'BDT': '৳',
+        'AED': 'د.إ',
+        'SAR': '﷼',
+        'INR': '₹',
+        'JPY': '¥',
+        'CNY': '¥',
+        'KRW': '₩',
+        'THB': '฿',
+        'VND': '₫',
+        'MYR': 'RM',
+        'SGD': 'S$',
+        'PHP': '₱',
+        'IDR': 'Rp',
+        'PKR': '₨',
+        'LKR': '₨',
+        'NPR': '₨',
+        'MMK': 'K',
+        'LAK': '₭',
+        'KHR': '៛',
+        'BND': 'B$'
+    };
+    return symbols[currency] || '$';
+}
+
 
 // Function to generate distinct colors for categories
 function generateCategoryColors(count) {
@@ -108,10 +138,18 @@ function renderSummaryPage() {
         summaryIntroText.innerHTML = '<span class="text-violet-600 font-semibold">📊 Expense Analysis Summary</span> for your selected statement';
     }
 
-    document.getElementById('statTotalSpent').textContent = `$${spent.toFixed(2)}`;
-    document.getElementById('statMonthlyIncome').textContent = `$${income.toFixed(2)}`;
+    // Update user income display with currency
+    const userIncomeDisplay = document.getElementById('userIncomeDisplay');
+    if (userIncomeDisplay) {
+        const currencySymbol = getCurrencySymbol(window.currency || 'USD');
+        userIncomeDisplay.textContent = `${currencySymbol}${parseFloat(userIncomeDisplay.textContent.replace(/[^\d.-]/g, '')).toFixed(2)}`;
+    }
+
+    const currencySymbol = getCurrencySymbol(window.currency || 'USD');
+    document.getElementById('statTotalSpent').textContent = `${currencySymbol}${spent.toFixed(2)}`;
+    document.getElementById('statMonthlyIncome').textContent = `${currencySymbol}${income.toFixed(2)}`;
     document.getElementById('statIncomeShare').textContent = `${((spent / income) * 100 || 0).toFixed(2)}%`;
-    document.getElementById('statLeaksFound').textContent = `$${leaks.toFixed(2)}`;
+    document.getElementById('statLeaksFound').textContent = `${currencySymbol}${leaks.toFixed(2)}`;
 
     const listContainer = document.getElementById('categoryDetailList');
     listContainer.innerHTML = '';
@@ -122,12 +160,13 @@ function renderSummaryPage() {
         window.analysisData.expenses.forEach(e => {
             const percentage = (e.amount / spent) * 100 || 0;
             const incomePortion = (e.amount / income) * 100 || 0;
+            const currencySymbol = getCurrencySymbol(window.currency || 'USD');
 
             listContainer.insertAdjacentHTML('beforeend', `
                 <div class="p-4 bg-gray-50 rounded-lg shadow-sm border-l-4" style="border-left-color: ${e.color || '#374151'};">
                     <div class="flex justify-between items-center">
                         <span class="text-lg text-gray-900">${e.category}</span>
-                        <span class="text-xl font-extrabold">$${e.amount.toFixed(2)}</span>
+                        <span class="text-xl font-extrabold">${currencySymbol}${e.amount.toFixed(2)}</span>
                     </div>
                     <div class="flex justify-between text-sm text-gray-500 mt-1">
                         <span>% of Total Spent: ${percentage.toFixed(2)}%</span>
@@ -213,8 +252,12 @@ function loadAnalysis(analysisId) {
                 totalLeaks: data.analysis.summary.totalDiscretionaryLeaks,
                 expenses: combineExpenses(data.analysis.categorizedExpenses),
                 statementPeriod: data.statementPeriod,
-                currentAnalysisId: analysisId
+                currentAnalysisId: analysisId,
+                currency: data.analysis.summary.currency || 'USD'
             };
+
+            // Update global currency
+            window.currency = window.analysisData.currency;
 
             // Show analysis section and unlock button
             const historySection = document.getElementById('historySection');
@@ -249,9 +292,10 @@ async function unlockBlueprint(event) {
         const result = await response.json();
 
         if (result.verified) {
-            // User is verified, redirect to blueprint with current analysis id
+            // User is verified, redirect to blueprint with current analysis id and currency
             const analysisId = window.analysisData.currentAnalysisId || window.latestAnalysisId;
-            window.location.replace(`blueprint.php?id=${analysisId}`);
+            const currency = window.currency || 'USD';
+            window.location.replace(`blueprint.php?id=${analysisId}&currency=${currency}`);
         } else {
             // User needs verification, send email
             const emailResponse = await fetch('send_verification.php', {
