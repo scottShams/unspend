@@ -109,6 +109,9 @@ function initializeFileUpload() {
             if (preloader) preloader.classList.remove('hidden');
             if (uploadStatus) uploadStatus.innerHTML = `<span class="text-amber-400 font-bold">Uploading and Analyzing...</span>`;
 
+            // Start dynamic text updates
+            startPreloaderTextUpdates();
+
             const formData = new FormData(uploadForm);
 
             // Fetch session data and add to formData
@@ -169,6 +172,7 @@ function initializeFileUpload() {
             .catch(error => {
                 // Hide preloader and show error
                 if (preloader) preloader.classList.add('hidden');
+                stopPreloaderTextUpdates();
 
                 // Check if it's a 504 timeout error - if so, redirect since data may still be processed
                 if (error.message.includes("504")) {
@@ -283,4 +287,35 @@ function showCopyError(copyButtonText, copyStatus) {
             copyStatus.classList.add('text-gray-500');
         }
     }, 3000);
+}
+
+// Dynamic preloader text updates
+let preloaderInterval = null;
+
+function startPreloaderTextUpdates() {
+    const preloaderText = document.getElementById('preloaderText');
+    if (!preloaderText) return;
+
+    const messages = [
+        'Processing your file...',
+        'Extracting transaction data...',
+        'Analyzing spending patterns...',
+        'Categorizing expenses...',
+        'Generating insights...',
+        'Almost done...'
+    ];
+
+    let currentIndex = 0;
+
+    preloaderInterval = setInterval(() => {
+        currentIndex = (currentIndex + 1) % messages.length;
+        preloaderText.textContent = messages[currentIndex];
+    }, 5000); // Change every 5 seconds
+}
+
+function stopPreloaderTextUpdates() {
+    if (preloaderInterval) {
+        clearInterval(preloaderInterval);
+        preloaderInterval = null;
+    }
 }

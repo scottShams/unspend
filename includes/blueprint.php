@@ -456,14 +456,6 @@ function determineBlueprintData($data) {
                                     <input type="radio" name="gender" value="female" required class="h-4 w-4 text-violet-600 focus:ring-violet-500 border-gray-300">
                                     <span class="ml-2 text-gray-700">Female</span>
                                 </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="gender" value="other" required class="h-4 w-4 text-violet-600 focus:ring-violet-500 border-gray-300">
-                                    <span class="ml-2 text-gray-700">Other</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="radio" name="gender" value="prefer_not_to_say" required class="h-4 w-4 text-violet-600 focus:ring-violet-500 border-gray-300">
-                                    <span class="ml-2 text-gray-700">Prefer not to say</span>
-                                </label>
                             </div>
                         </div>
 

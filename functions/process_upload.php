@@ -73,6 +73,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["bankStatementFile"]))
                 $_SESSION['user_income'] = $user['income'];
             }
 
+            // Check if user has already analyzed 3 PDFs
+            $completedCount = $userManager->getCompletedAnalysisCount($user['id']);
+            if ($completedCount >= 3) {
+                $error = "You have already analyzed 3 PDFs. Please upgrade to continue.";
+                if ($isAjax) {
+                    echo json_encode(['success' => false, 'message' => $error]);
+                    exit;
+                } else {
+                    echo $error;
+                    exit;
+                }
+            }
+
             // Check if this file has already been analyzed for this user
             $stmt = $pdo->prepare("SELECT analysis_result FROM uploads WHERE user_id = ? AND filename = ?");
             $stmt->execute([$user['id'], $target_file]);
@@ -109,7 +122,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["bankStatementFile"]))
             }
             exit();
         } catch (Exception $e) {
-            $error = "Error processing file: " . $e->getMessage();
+            // Show meaningful validation errors directly, generic message for technical errors
+            $exceptionMessage = $e->getMessage();
+            if (strpos($exceptionMessage, "The uploaded file does not appear to be a valid bank statement") !== false ||
+                strpos($exceptionMessage, "No transactions parsed") !== false) {
+                $error = $exceptionMessage;
+            } else {
+                $error = "Oops, we failed to analyze your file. Please try again.";
+            }
             if ($isAjax) {
                 echo json_encode(['success' => false, 'message' => $error]);
             } else {
