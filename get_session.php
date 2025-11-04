@@ -18,6 +18,33 @@ if (!empty($data['email'])) {
     if ($user) {
         $data['analysis_count'] = $userMgmt->getCompletedAnalysisCount($user['id']);
     }
+
+    if ($data['analysis_count'] >= 3 && (!isset($_SESSION['user_authorized']) || $_SESSION['user_authorized'] === false)) {
+        $referrerId = $_SESSION['referrer_id'] ?? null;
+
+        // Check if user is already logged in (existing user uploading another file)
+        if (isset($_SESSION['user_id'])) {
+            // Existing user - get their data from session
+            $user = [
+                'id' => $_SESSION['user_id'],
+                'email' => $_SESSION['user_email'],
+                'name' => $_SESSION['user_name'],
+                'income' => $_SESSION['user_income']
+            ];
+        } else {
+            // New user - create account
+            $user = $userMgmt->createOrGetUser($data['email'], $data['name'], $data['income'], null, $referrerId);
+            // Store user info in session
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_name'] = $user['name'];
+            $_SESSION['user_income'] = $user['income'];
+        }
+        // Update data array with new session values
+        $data['email'] = $_SESSION['user_email'];
+        $data['name'] = $_SESSION['user_name'];
+        $data['income'] = $_SESSION['user_income'];
+    }
 }
 
 echo json_encode($data);
