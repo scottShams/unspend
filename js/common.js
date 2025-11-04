@@ -7,13 +7,14 @@ window.openModal = function(id) {
         fetch('get_session.php')
             .then(response => response.json())
             .then(data => {
-                console.log('Analysis Count:', data.analysis_count);
                 if (data.analysis_count >= 3) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Analysis Limit Reached',
                         text: 'You have already analyzed 3 PDFs. Please upgrade to continue.',
                         confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.reload();
                     });
                     return;
                 }
