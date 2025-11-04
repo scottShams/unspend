@@ -3,14 +3,13 @@ Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Force HTTPS (optional but recommended)
+    # Force HTTPS
     RewriteCond %{HTTPS} !=on
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # Handle referral URLs
-    RewriteRule ^referral/([a-zA-Z0-9]+)$ index.php?ref=$1 [L,QSA]
-
-    # Redirect all other requests to index.php
+    # Redirect referral links to index with token (visible URL change)
+    RewriteRule ^referral/([a-zA-Z0-9]+)$ /?ref=$1 [R=302,L,QSA]
+    # Catch all other routes
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L,QSA]
