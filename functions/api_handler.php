@@ -181,6 +181,7 @@ function callOpenAIAPIWithRetry($rawStatement){
                                 'summary' => [
                                     'type' => 'object',
                                     'properties' => [
+                                        'currency' => ['type' => 'string'],
                                         'totalSpent' => ['type' => 'number'],
                                         'totalCredit' => ['type' => 'number'],
                                         'totalDiscretionaryLeaks' => ['type' => 'number'],
@@ -193,12 +194,7 @@ function callOpenAIAPIWithRetry($rawStatement){
                                             'required' => ['startDate', 'endDate']
                                         ]
                                     ],
-                                    'required' => [
-                                        'totalSpent',
-                                        'totalCredit',
-                                        'totalDiscretionaryLeaks',
-                                        'statementPeriod'
-                                    ]
+                                    'required' => ['currency','totalSpent','totalCredit','totalDiscretionaryLeaks','statementPeriod']
                                 ],
                                 'categorizedExpenses' => [
                                     'type' => 'array',
@@ -209,17 +205,32 @@ function callOpenAIAPIWithRetry($rawStatement){
                                             'amount' => ['type' => 'number'],
                                             'isLeak' => ['type' => 'boolean']
                                         ],
-                                        'required' => ['category', 'amount', 'isLeak']
+                                        'required' => ['category','amount','isLeak']
                                     ]
                                 ]
                             ],
-                            'required' => ['summary', 'categorizedExpenses']
+                            'required' => ['summary','categorizedExpenses']
                         ]
                     ]
                 ],
                 'messages' => [
-                    ['role' => 'system', 'content' => 'You are a financial summary assistant. Return concise JSON only.'],
-                    ['role' => 'user', 'content' => "Analyze this CSV of transactions:\n\n{$rawStatement}"]
+                    [
+                        'role' => 'system',
+                        'content' => <<<SYS
+You are a financial analysis assistant. Return ONLY JSON strictly following the schema.
+Rules:
+1. Detect the correct currency (USD, EUR, BDT, AED, etc.) from symbols or context. All totals in this currency.
+2. "isLeak" = discretionary spending (non-essential). Include real leaks only.
+3. Generate at most 10 categories (essential + discretionary).
+4. Do NOT create extra categories not present in the statement.
+5. Numbers only (no symbols) for amounts.
+6. JSON must validate schema.
+SYS
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => "Analyze this CSV of transactions:\n\n{$rawStatement}"
+                    ]
                 ],
             ]);
 
@@ -231,11 +242,11 @@ function callOpenAIAPIWithRetry($rawStatement){
                 throw new Exception("OpenAI API failed after $maxRetries attempts: " . $e->getMessage());
             }
             sleep($wait);
-            $wait *= 2; // exponential backoff
+            $wait *= 2;
         }
     }
-
 }
+
 function generateBlueprintWithOpenAI($analysisData, $userInfo = null) {
     $analysisData = preg_replace('/\s+/', ' ', $analysisData); // remove extra whitespace
 

@@ -15,6 +15,8 @@ if ($analysisId) {
     $analysis = $userManager->getAnalysisById($analysisId, $_SESSION['user_id']);
     if ($analysis && isset($analysis['analysis_result'])) {
         $analysisData = json_decode($analysis['analysis_result'], true);
+        $currency = $analysisData['summary']['currency'] ?? 'USD';
+        $currencySymbol = getCurrencySymbol($currency);
 
         // Check if blueprint already exists
         if (!empty($analysis['blueprint_result'])) {
@@ -50,6 +52,8 @@ if ($analysisId) {
     $latestAnalysis = $userManager->getLatestAnalysis($_SESSION['user_id']);
     if ($latestAnalysis && isset($latestAnalysis['analysis_result'])) {
         $analysisData = json_decode($latestAnalysis['analysis_result'], true);
+        $currency = $analysisData['summary']['currency'] ?? 'USD';
+        $currencySymbol = getCurrencySymbol($currency);
 
         // Check if blueprint already exists
         if (!empty($latestAnalysis['blueprint_result'])) {
@@ -79,6 +83,35 @@ if ($analysisId) {
             }
         }
     }
+}
+
+function getCurrencySymbol($currency) {
+    $symbols = [
+        'USD' => '$',
+        'EUR' => '€',
+        'GBP' => '£',
+        'BDT' => '৳',
+        'AED' => 'د.إ',
+        'SAR' => '﷼',
+        'INR' => '₹',
+        'JPY' => '¥',
+        'CNY' => '¥',
+        'KRW' => '₩',
+        'THB' => '฿',
+        'VND' => '₫',
+        'MYR' => 'RM',
+        'SGD' => 'S$',
+        'PHP' => '₱',
+        'IDR' => 'Rp',
+        'PKR' => '₨',
+        'LKR' => '₨',
+        'NPR' => '₨',
+        'MMK' => 'K',
+        'LAK' => '₭',
+        'KHR' => '៛',
+        'BND' => 'B$'
+    ];
+    return $symbols[$currency] ?? '$';
 }
 
 function determineBlueprintData($data) {
@@ -497,7 +530,7 @@ function determineBlueprintData($data) {
                     <?php if (isset($blueprintData['key_insights']) && is_array($blueprintData['key_insights'])): ?>
                         Action Plan to Build Wealth - Financial Health Score: <?php echo number_format($blueprintData['financial_health_score'] ?? 0, 1); ?>/100
                     <?php else: ?>
-                        Action Plan to Recover $<?php echo number_format($blueprintData['leakTotal'] ?? 0, 2); ?> in Monthly Leaks.
+                        Action Plan to Recover <?php echo $currencySymbol; ?><?php echo number_format($blueprintData['leakTotal'] ?? 0, 2); ?> in Monthly Leaks.
                     <?php endif; ?>
                 </p>
             </header>
@@ -515,7 +548,7 @@ function determineBlueprintData($data) {
                     <div class="flex-shrink-0">
                         <div id="blueprintChartRing" class="blueprint-chart-ring">
                             <div class="blueprint-chart-inner">
-                                <span class="text-2xl font-bold text-gray-800" id="currentIncomeDisplay">$<?php echo number_format($user['income'] ?? 0, 0); ?></span>
+                                <span class="text-2xl font-bold text-gray-800" id="currentIncomeDisplay"><?php echo $currencySymbol; ?><?php echo number_format($user['income'] ?? 0, 0); ?></span>
                                 <span class="text-sm text-gray-500">Your Income</span>
                             </div>
                         </div>
@@ -528,7 +561,7 @@ function determineBlueprintData($data) {
                                 <div class="p-4 bg-emerald-50 rounded-lg flex items-start gap-4 shadow">
                                     <div class="w-4 h-4 bg-emerald-500 rounded-full mt-1 flex-shrink-0"></div>
                                     <div>
-                                        <h3 class="text-xl font-semibold text-gray-800"><span id="needsActual"><?php echo number_format($blueprintData['wealth_allocation']['needs_percent'] ?? 50, 1); ?>%</span> Needs <span class="text-emerald-600 text-base ml-2">$<?php echo number_format($blueprintData['wealth_allocation']['needs_amount'] ?? 0, 2); ?></span></h3>
+                                        <h3 class="text-xl font-semibold text-gray-800"><span id="needsActual"><?php echo number_format($blueprintData['wealth_allocation']['needs_percent'] ?? 50, 1); ?>%</span> Needs <span class="text-emerald-600 text-base ml-2"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['wealth_allocation']['needs_amount'] ?? 0, 2); ?></span></h3>
                                         <p class="text-gray-600 text-sm">Essential, fixed costs (rent, utilities, required debt payments).</p>
                                     </div>
                                 </div>
@@ -536,7 +569,7 @@ function determineBlueprintData($data) {
                                 <div class="p-4 bg-amber-50 rounded-lg flex items-start gap-4 shadow">
                                     <div class="w-4 h-4 bg-amber-500 rounded-full mt-1 flex-shrink-0"></div>
                                     <div>
-                                        <h3 class="text-xl font-semibold text-gray-800"><span id="wantsActual"><?php echo number_format($blueprintData['wealth_allocation']['wants_percent'] ?? 30, 1); ?>%</span> Wants <span class="text-amber-600 text-base ml-2">$<?php echo number_format($blueprintData['wealth_allocation']['wants_amount'] ?? 0, 2); ?></span></h3>
+                                        <h3 class="text-xl font-semibold text-gray-800"><span id="wantsActual"><?php echo number_format($blueprintData['wealth_allocation']['wants_percent'] ?? 30, 1); ?>%</span> Wants <span class="text-amber-600 text-base ml-2"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['wealth_allocation']['wants_amount'] ?? 0, 2); ?></span></h3>
                                         <p class="text-gray-600 text-sm">Discretionary spending (dining, entertainment, non-essential shopping).</p>
                                     </div>
                                 </div>
@@ -544,7 +577,7 @@ function determineBlueprintData($data) {
                                 <div class="p-4 bg-blue-50 rounded-lg flex items-start gap-4 shadow">
                                     <div class="w-4 h-4 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
                                     <div>
-                                        <h3 class="text-xl font-semibold text-gray-800"><span id="saveActual"><?php echo number_format($blueprintData['wealth_allocation']['savings_percent'] ?? 20, 1); ?>%</span> Save & Invest <span class="text-blue-600 text-base ml-2">$<?php echo number_format($blueprintData['wealth_allocation']['savings_amount'] ?? 0, 2); ?></span></h3>
+                                        <h3 class="text-xl font-semibold text-gray-800"><span id="saveActual"><?php echo number_format($blueprintData['wealth_allocation']['savings_percent'] ?? 20, 1); ?>%</span> Save & Invest <span class="text-blue-600 text-base ml-2"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['wealth_allocation']['savings_amount'] ?? 0, 2); ?></span></h3>
                                         <p class="text-gray-600 text-sm">Emergency fund, retirement, investments.</p>
                                     </div>
                                 </div>
@@ -585,7 +618,7 @@ function determineBlueprintData($data) {
                     <?php
                     $leakNames = !empty($blueprintData['topLeaks']) ? implode(', ', $blueprintData['topLeaks']) : 'general discretionary spending';
                     $leakTotal = $blueprintData['leakTotal'] ?? 0;
-                    echo "The AI identified your top spending leaks of <strong>$" . number_format($leakTotal, 2) . "</strong> in <strong>$leakNames</strong>.";
+                    echo "The AI identified your top spending leaks of <strong>" . $currencySymbol . number_format($leakTotal, 2) . "</strong> in <strong>$leakNames</strong>.";
                     ?>
                 </p>
 
@@ -596,7 +629,7 @@ function determineBlueprintData($data) {
                                 <strong class="text-indigo-600 text-xl block mb-1">Step <?php echo $step['step_number']; ?>: <?php echo htmlspecialchars($step['title']); ?></strong>
                                 <p><?php echo htmlspecialchars($step['description']); ?></p>
                                 <?php if (isset($step['estimated_savings']) && $step['estimated_savings'] > 0): ?>
-                                    <p class="text-green-600 font-semibold mt-2">💰 Potential Monthly Savings: $<?php echo number_format($step['estimated_savings'], 2); ?></p>
+                                    <p class="text-green-600 font-semibold mt-2">💰 Potential Monthly Savings: <?php echo $currencySymbol; ?><?php echo number_format($step['estimated_savings'], 2); ?></p>
                                 <?php endif; ?>
                                 <div class="flex gap-4 mt-2 text-sm text-gray-500">
                                     <span>Difficulty: <?php echo htmlspecialchars($step['difficulty'] ?? 'Medium'); ?></span>
@@ -623,12 +656,12 @@ function determineBlueprintData($data) {
                         <?php if (!empty($topLeaks)): ?>
                             <li class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                                 <strong class="text-indigo-600 text-xl block mb-1">Step 2: Cap Your Top Spending Leaks</strong>
-                                <p>Cut <strong><?php echo implode(', ', $topLeaks); ?></strong> by 30% — that's <strong>$<?php echo number_format($leakTotal * 0.3, 2); ?></strong> — and move it to the automated savings.</p>
+                                <p>Cut <strong><?php echo implode(', ', $topLeaks); ?></strong> by 30% — that's <strong><?php echo $currencySymbol; ?><?php echo number_format($leakTotal * 0.3, 2); ?></strong> — and move it to the automated savings.</p>
                             </li>
                         <?php else: ?>
                             <li class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                                 <strong class="text-indigo-600 text-xl block mb-1">Step 2: Implement a 'Wants' Hard Limit</strong>
-                                <p>Cap all discretionary spending at <strong>$<?php echo number_format($income * 0.3, 2); ?></strong> (30% of income).</p>
+                                <p>Cap all discretionary spending at <strong><?php echo $currencySymbol; ?><?php echo number_format($income * 0.3, 2); ?></strong> (30% of income).</p>
                             </li>
                         <?php endif; ?>
 
@@ -673,15 +706,15 @@ function determineBlueprintData($data) {
                             <div class="space-y-2 text-sm">
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Current Spending:</span>
-                                    <span class="font-semibold text-red-600">$<?php echo number_format($area['current_spending'], 2); ?></span>
+                                    <span class="font-semibold text-red-600"><?php echo $currencySymbol; ?><?php echo number_format($area['current_spending'], 2); ?></span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-600">Recommended:</span>
-                                    <span class="font-semibold text-green-600">$<?php echo number_format($area['recommended_spending'], 2); ?></span>
+                                    <span class="font-semibold text-green-600"><?php echo $currencySymbol; ?><?php echo number_format($area['recommended_spending'], 2); ?></span>
                                 </div>
                                 <div class="flex justify-between border-t pt-2">
                                     <span class="text-gray-600">Potential Savings:</span>
-                                    <span class="font-bold text-green-700">$<?php echo number_format($area['potential_savings'], 2); ?>/month</span>
+                                    <span class="font-bold text-green-700"><?php echo $currencySymbol; ?><?php echo number_format($area['potential_savings'], 2); ?>/month</span>
                                 </div>
                             </div>
                             <div class="mt-3">
@@ -703,25 +736,25 @@ function determineBlueprintData($data) {
                     <div class="bg-green-50 p-6 rounded-xl shadow-lg text-center">
                         <div class="text-3xl mb-2">🏦</div>
                         <h3 class="text-lg font-semibold text-gray-800 mb-2">Emergency Fund</h3>
-                        <p class="text-2xl font-bold text-green-600">$<?php echo number_format($blueprintData['monthly_targets']['emergency_fund_target'], 2); ?></p>
+                        <p class="text-2xl font-bold text-green-600"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['monthly_targets']['emergency_fund_target'], 2); ?></p>
                         <p class="text-sm text-gray-600">Monthly contribution target</p>
                     </div>
                     <div class="bg-blue-50 p-6 rounded-xl shadow-lg text-center">
                         <div class="text-3xl mb-2">📈</div>
                         <h3 class="text-lg font-semibold text-gray-800 mb-2">Investments</h3>
-                        <p class="text-2xl font-bold text-blue-600">$<?php echo number_format($blueprintData['monthly_targets']['investment_target'], 2); ?></p>
+                        <p class="text-2xl font-bold text-blue-600"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['monthly_targets']['investment_target'], 2); ?></p>
                         <p class="text-sm text-gray-600">Monthly investment target</p>
                     </div>
                     <div class="bg-red-50 p-6 rounded-xl shadow-lg text-center">
                         <div class="text-3xl mb-2">💳</div>
                         <h3 class="text-lg font-semibold text-gray-800 mb-2">Debt Reduction</h3>
-                        <p class="text-2xl font-bold text-red-600">$<?php echo number_format($blueprintData['monthly_targets']['debt_reduction_target'], 2); ?></p>
+                        <p class="text-2xl font-bold text-red-600"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['monthly_targets']['debt_reduction_target'], 2); ?></p>
                         <p class="text-sm text-gray-600">Monthly debt payoff target</p>
                     </div>
                     <div class="bg-purple-50 p-6 rounded-xl shadow-lg text-center">
                         <div class="text-3xl mb-2">💰</div>
                         <h3 class="text-lg font-semibold text-gray-800 mb-2">Wealth Goal</h3>
-                        <p class="text-2xl font-bold text-purple-600">$<?php echo number_format($blueprintData['monthly_targets']['wealth_accumulation_goal'], 2); ?></p>
+                        <p class="text-2xl font-bold text-purple-600"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['monthly_targets']['wealth_accumulation_goal'], 2); ?></p>
                         <p class="text-sm text-gray-600">Monthly wealth accumulation</p>
                     </div>
                 </div>

@@ -147,6 +147,25 @@ function parseTransactionsAI($text)
     }
 }
 
+/**
+ * Safely convert any string to UTF-8, removing malformed characters.
+ */
+function safeUtf8Encode(string $input): string
+{
+    // Detect encoding
+    $encoding = mb_detect_encoding($input, ['UTF-8','ISO-8859-1','Windows-1252','ASCII'], true);
+
+    if ($encoding) {
+        $input = mb_convert_encoding($input, 'UTF-8', $encoding);
+    } else {
+        $input = utf8_encode($input); // fallback
+    }
+
+    // Remove invalid UTF-8 characters
+    return preg_replace('//u', '', $input);
+}
+
+
 function parseTransactionsAIinChunks($text)
 {
     $apiKey = Env::get('OPENAI_API_KEY');
@@ -155,15 +174,20 @@ function parseTransactionsAIinChunks($text)
         'timeout'  => 120,
     ]);
 
-    // Split text into 5000-character chunks to prevent timeouts
+    // Force text to valid UTF-8 using global helper
+    $text = safeUtf8Encode($text);
+
+    // Split text into 2000-character chunks
     $chunks = str_split($text, 2000);
     $allTransactions = [];
 
     foreach ($chunks as $index => $chunk) {
-        $prompt = "
+        $chunk = safeUtf8Encode($chunk);
+
+        $prompt = <<<PROMPT
         Extract ONLY transactions from the most recent 30 days in this text.
         Output strict JSON:
-        {\"transactions\":[{\"date\":\"YYYY-MM-DD\",\"description\":\"string\",\"debit\":number,\"credit\":number,\"balance\":number|null}]}
+        {"transactions":[{"date":"YYYY-MM-DD","description":"string","debit":number,"credit":number,"balance":number|null}]}
 
         Rules:
         - Include transactions within last 30 days of latest date in text.
@@ -171,9 +195,8 @@ function parseTransactionsAIinChunks($text)
         - Normalize dates to YYYY-MM-DD.
 
         CHUNK #{$index}:
-        $chunk
-        ";
-
+        {$chunk}
+        PROMPT;
 
         try {
             $response = $client->post('chat/completions', [
@@ -194,6 +217,9 @@ function parseTransactionsAIinChunks($text)
 
             $result = json_decode($response->getBody(), true);
             $jsonOutput = $result['choices'][0]['message']['content'] ?? '';
+
+            $jsonOutput = safeUtf8Encode($jsonOutput);
+
             $data = json_decode($jsonOutput, true);
 
             if (!empty($data['transactions'])) {
@@ -201,12 +227,13 @@ function parseTransactionsAIinChunks($text)
             }
 
         } catch (Exception $e) {
-            // Log and continue — don’t fail the whole process
-            file_put_contents(__DIR__ . '/../logs/ai_parser_errors.log', "Chunk $index failed: " . $e->getMessage() . "\n", FILE_APPEND);
+            $logFile = __DIR__ . '/../logs/ai_parser_errors.log';
+            $logDir = dirname($logFile);
+            if (!is_dir($logDir)) mkdir($logDir, 0755, true);
+            file_put_contents($logFile, "Chunk $index failed: " . $e->getMessage() . "\n", FILE_APPEND);
         }
 
-        // Delay slightly between requests to avoid rate limits
-        usleep(300000); // 0.3 sec
+        usleep(300000); // 0.3 sec delay
     }
 
     if (empty($allTransactions)) {
@@ -215,6 +242,7 @@ function parseTransactionsAIinChunks($text)
 
     return $allTransactions;
 }
+
 
 function processTransaction($currentTransaction) {
     $fullText = implode(' ', $currentTransaction);
