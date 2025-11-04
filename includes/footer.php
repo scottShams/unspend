@@ -110,7 +110,7 @@
                     <!-- Preloader Animation -->
                     <div id="preloader" class="hidden mt-4 text-center">
                         <div class="inline-block w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                        <p class="text-white mt-2">Processing your file...</p>
+                        <p id="preloaderText" class="text-white mt-2">Processing your file...</p>
                     </div>
                 </div>
             </div>
