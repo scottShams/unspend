@@ -37,52 +37,23 @@ if (isset($_SESSION['user_id'])) {
                         <h3 class="text-xl font-bold text-violet-800 mb-3">1. Grab Your Secret Link:</h3>
 
                         <?php if ($isLoggedIn): ?>
-                        <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-                            <input type="text" id="referralLink"
-                                value="<?php echo htmlspecialchars($referralLink); ?>"
-                                readonly
-                                class="flex-grow px-4 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-gray-600 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <input type="text" id="referralLink"
+                            value="<?php echo htmlspecialchars($referralLink); ?>"
+                            readonly
+                            class="w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm bg-white text-gray-600 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 mb-4">
 
+                        <div class="flex gap-4">
                             <button onclick="copyReferralLink()"
-                                class="flat-cta text-white py-3 px-6 rounded-lg font-bold shadow-md whitespace-nowrap">
-                                <span id="copyButtonText">Copy Link</span>
+                                class="bg-amber-400 text-violet-900 py-3 px-6 rounded-lg font-bold shadow-md hover:bg-amber-300 transition duration-150 w-2/3">
+                                <span id="copyButtonText">Copy Link to Share</span>
+                            </button>
+
+                            <button onclick="nativeShare()" class="bg-gray-200 hover:bg-gray-300 text-violet-700 py-3 px-6 rounded-lg font-bold shadow-md transition w-1/3 flex items-center justify-center">
+                                <i class="fas fa-share-alt text-xl"></i>
                             </button>
                         </div>
 
                         <p class="text-sm text-gray-500 mt-2" id="copyStatus"></p>
-
-                        <!-- 🔗 Social Share Buttons -->
-                        <div class="flex justify-start gap-4 mt-5">
-                            <button onclick="shareVia('whatsapp')" title="Share on WhatsApp"
-                                class="w-11 h-11 flex items-center justify-center rounded-full bg-green-500 hover:bg-green-400 shadow-md transition">
-                                <i class="fab fa-whatsapp text-lg text-white"></i>
-                            </button>
-
-                            <button onclick="shareVia('messenger')" title="Share on Messenger"
-                                class="w-11 h-11 flex items-center justify-center rounded-full bg-blue-500 hover:bg-blue-400 shadow-md transition">
-                                <i class="fab fa-facebook-messenger text-lg text-white"></i>
-                            </button>
-
-                            <button onclick="shareVia('email')" title="Share via Email"
-                                class="w-11 h-11 flex items-center justify-center rounded-full bg-amber-500 hover:bg-amber-400 shadow-md transition">
-                                <i class="fas fa-envelope text-lg text-white"></i>
-                            </button>
-
-                            <button onclick="shareVia('twitter')" title="Share on Twitter"
-                                class="w-11 h-11 flex items-center justify-center rounded-full bg-sky-500 hover:bg-sky-400 shadow-md transition">
-                                <i class="fab fa-twitter text-lg text-white"></i>
-                            </button>
-
-                            <button onclick="shareVia('linkedin')" title="Share on LinkedIn"
-                                class="w-11 h-11 flex items-center justify-center rounded-full bg-blue-700 hover:bg-blue-600 shadow-md transition">
-                                <i class="fab fa-linkedin-in text-lg text-white"></i>
-                            </button>
-
-                            <button onclick="nativeShare()" title="Share via Device"
-                                class="w-11 h-11 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-violet-700 shadow-md transition">
-                                <i class="fas fa-share-alt text-lg"></i>
-                            </button>
-                        </div>
 
                         <?php else: ?>
                         <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">

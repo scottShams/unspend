@@ -223,7 +223,9 @@ window.copyReferralLink = function() {
 }
 
 function shareVia(platform) {
-    const link = document.getElementById('dashboardReferralLink').value;
+    const linkInput = document.getElementById('referralLink') || document.getElementById('dashboardReferralLink');
+    const link = linkInput.value;
+
     const message = encodeURIComponent(
         "I never had the Time to check my bank statements properly to see Why my Money Run Out!\n" +
         "This simple app is helping me see where my Money goes by Analysing my Bank statement within seconds, and Helping me Save!\n" +
@@ -259,19 +261,32 @@ function shareVia(platform) {
 }
 
 function nativeShare() {
-    const link = document.getElementById('dashboardReferralLink').value;
-    const message = "🚀 Try this awesome fintech app for money analysis! 💸 Check it out here: " + link;
+    const linkInput = document.getElementById('referralLink') || document.getElementById('dashboardReferralLink');
+    const link = linkInput.value;
+
+    const message = "I never had the Time to check my bank statements properly to see Why my Money Run Out!\n" +
+        "This simple app is helping me see where my Money goes by Analysing my Bank statement within seconds, and Helping me Save!\n" +
+        "Use my link to get Free Credits for you.\n💸 Check it out here: " + link;
 
     if (navigator.share) {
-        navigator.share({
-            title: 'Fintech App',
-            text: message,
-            url: link
-        });
+        try {
+            navigator.share({
+                title: 'Fintech App',
+                text: message,
+                url: link
+            }).then(() => {
+                console.log('Successfully shared');
+            }).catch((error) => {
+                console.error('Error sharing:', error);
+            });
+        } catch (err) {
+            console.error('Sharing failed:', err);
+        }
     } else {
         alert('Sharing not supported on this browser.');
     }
 }
+
 function fallbackCopyTextToClipboard(text, copyButtonText, copyStatus) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
