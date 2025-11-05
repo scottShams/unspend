@@ -299,7 +299,7 @@ function nativeShare() {
 
     const message = "I never had the Time to check my bank statements properly to see Why my Money Run Out!\n\n" +
         "This simple app is helping me see where my Money goes by Analysing my Bank statement within seconds, and Helping me Save!\n\n" +
-        "Use my link to get Free Credits for you.\n\n💸 Check it out here: " + link;
+        "Use my link to get Free Credits for you.\n\n💸 Check it out here: ";
 
     if (navigator.share) {
         try {
