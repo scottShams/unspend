@@ -29,7 +29,7 @@ $userIncome = number_format($user['income'], 2) ?? 0;
 $userHistory = [];
 $latestAnalysis = null;
 if ($userId) {
-    $userHistory = $userManager->getUserAnalysisHistory($userId, 5); // Get last 5 analyses
+    $userHistory = $userManager->getUserAnalysisHistory($userId, 10); // Get last 5 analyses
     $latestAnalysis = $userManager->getLatestAnalysis($userId);
 }
 

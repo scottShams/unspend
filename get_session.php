@@ -5,7 +5,8 @@ $data = [
     'email' => $_SESSION['user_email'] ?? $_SESSION['temp_email'] ?? '',
     'name' => $_SESSION['user_name'] ?? $_SESSION['temp_name'] ?? '',
     'income' => $_SESSION['user_income'] ?? $_SESSION['temp_income'] ?? '',
-    'analysis_count' => 0
+    'analysis_count' => 0,
+    'additional_credits' => 0
 ];
 
 if (!empty($data['email'])) {
@@ -16,8 +17,21 @@ if (!empty($data['email'])) {
 
     $user = $userMgmt->getUserByEmail($data['email']);
     if ($user) {
-        $data['analysis_count'] = $userMgmt->getCompletedAnalysisCount($user['id']);
+        $analysisCount = $userMgmt->getCompletedAnalysisCount($user['id']);
+        $additionalCredits = (int)($user['additional_credits'] ?? 0);
+
+        // Calculate how many analyses are still allowed
+        $totalAllowed = $analysisCount + $additionalCredits;
+        $remaining = max(0, $totalAllowed - $analysisCount);
+
+        $data['analysis_count'] = $analysisCount;
+        $data['additional_credits'] = $additionalCredits;
+        $data['remaining_credits'] = $remaining;
+
+        // Update session
+        $_SESSION['additional_credits'] = $additionalCredits;
     }
+
 
     if ($data['analysis_count'] >= 3 && (!isset($_SESSION['user_authorized']) || $_SESSION['user_authorized'] === false)) {
         $referrerId = $_SESSION['referrer_id'] ?? null;

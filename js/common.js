@@ -7,14 +7,28 @@ window.openModal = function(id) {
         fetch('get_session.php')
             .then(response => response.json())
             .then(data => {
-                if (data.analysis_count >= 3) {
+                // Check if user has reached the free limit (3 analyses) and has no additional credits
+                if (data.analysis_count == 3) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Analysis Limit Reached',
                         text: 'You have already analyzed 3 PDFs. Please upgrade to continue.',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'Upgrade Now'
                     }).then(() => {
-                        window.location.reload();
+                        window.location.href = 'pricing.php';
+                    });
+                    return;
+                }
+
+                // Check if user has additional credits but has used them all
+                if (data.remaining_credits <= 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Credits Exhausted',
+                        text: 'You have used all your purchased credits. Upgrade to continue analyzing PDFs.',
+                        confirmButtonText: 'Upgrade Now'
+                    }).then(() => {
+                        window.location.href = 'pricing.php';
                     });
                     return;
                 }
@@ -158,6 +172,25 @@ function initializeFileUpload() {
             })
             .then(data => {
                 if (data.success) {
+                    // Decrement additional credits after successful analysis (if user has paid credits)
+                    fetch('get_session.php')
+                        .then(response => response.json())
+                        .then(sessionData => {
+                            if (sessionData.additional_credits > 0) {
+                                // User has additional credits, decrement them
+                                fetch('decrement_credits.php', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ action: 'decrement' })
+                                }).catch(error => {
+                                    console.warn('Failed to decrement credits:', error);
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.warn('Failed to check session for credit decrement:', error);
+                        });
+
                     // Success — redirect to summary page
                     window.location.href = 'summary.php';
                 } else {
@@ -264,9 +297,9 @@ function nativeShare() {
     const linkInput = document.getElementById('referralLink') || document.getElementById('dashboardReferralLink');
     const link = linkInput.value;
 
-    const message = "I never had the Time to check my bank statements properly to see Why my Money Run Out!\n" +
-        "This simple app is helping me see where my Money goes by Analysing my Bank statement within seconds, and Helping me Save!\n" +
-        "Use my link to get Free Credits for you.\n💸 Check it out here: " + link;
+    const message = "I never had the Time to check my bank statements properly to see Why my Money Run Out!\n\n" +
+        "This simple app is helping me see where my Money goes by Analysing my Bank statement within seconds, and Helping me Save!\n\n" +
+        "Use my link to get Free Credits for you.\n\n💸 Check it out here: " + link;
 
     if (navigator.share) {
         try {
@@ -385,3 +418,64 @@ function stopPreloaderTextUpdates() {
         preloaderInterval = null;
     }
 }
+// Upgrade Plan Function
+window.upgradePlan = function(planType) {
+    // Show loading state
+    Swal.fire({
+        title: 'Processing...',
+        text: 'Please wait while we upgrade your plan.',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    // Determine credits to add based on plan
+    const creditsToAdd = planType === 'monthly' ? 1 : 12;
+
+    // Update session with new credits (you'll need to implement this on the server side)
+    fetch('update_credits.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            plan: planType,
+            credits: creditsToAdd
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Upgrade Successful!',
+                text: `You've unlocked ${creditsToAdd} more credit${creditsToAdd > 1 ? 's' : ''}! You can now analyze another PDF.`,
+                confirmButtonText: 'Continue Analyzing'
+            }).then(() => {
+                // Redirect back to index.php or wherever the upload modal is
+                window.location.href = 'index.php';
+            });
+        } else {
+            // Show error message
+            Swal.fire({
+                icon: 'error',
+                title: 'Upgrade Failed',
+                text: data.message || 'Something went wrong. Please try again.',
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error upgrading plan:', error);
+        console.log('Error details:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Connection Error',
+            text: 'Please check your internet connection and try again.',
+            confirmButtonText: 'OK'
+        });
+    });
+};
