@@ -222,6 +222,51 @@ window.copyReferralLink = function() {
     }
 }
 
+function shareVia(platform) {
+    const link = document.getElementById('dashboardReferralLink').value;
+    const message = encodeURIComponent("🚀 Try this awesome fintech app for money analysis! 💸 Check it out here: " + link);
+    
+    let shareUrl = '';
+
+    switch (platform) {
+        case 'whatsapp':
+            shareUrl = `https://wa.me/?text=${message}`;
+            break;
+        case 'messenger':
+            shareUrl = `fb-messenger://share?link=${encodeURIComponent(link)}&app_id=123456789`; // optional app_id
+            break;
+        case 'email':
+            shareUrl = `mailto:?subject=Awesome Fintech App&body=${message}`;
+            break;
+        case 'twitter':
+            shareUrl = `https://twitter.com/intent/tweet?text=${message}`;
+            break;
+        case 'linkedin':
+            shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(link)}`;
+            break;
+        default:
+            alert('Sharing platform not supported!');
+            return;
+    }
+
+    // Open the share URL in a new tab or app
+    window.open(shareUrl, '_blank');
+}
+
+function nativeShare() {
+    const link = document.getElementById('dashboardReferralLink').value;
+    const message = "🚀 Try this awesome fintech app for money analysis! 💸 Check it out here: " + link;
+
+    if (navigator.share) {
+        navigator.share({
+            title: 'Fintech App',
+            text: message,
+            url: link
+        });
+    } else {
+        alert('Sharing not supported on this browser.');
+    }
+}
 function fallbackCopyTextToClipboard(text, copyButtonText, copyStatus) {
     const textArea = document.createElement("textarea");
     textArea.value = text;
