@@ -72,34 +72,13 @@ if (isset($_SESSION['user_id'])) {
                         readonly
                         class="flex-grow px-4 py-3 mb-4 border border-violet-400 rounded-md shadow-sm bg-violet-600 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
 
-                    <button onclick="copyReferralLink()"
-                        class="bg-amber-400 text-violet-900 py-3 px-6 rounded-lg font-bold shadow-md hover:bg-amber-300 transition duration-150 mb-6">
-                        Copy Link to Share
-                    </button>
-
-                    <div class="flex justify-center gap-4">
-                        <button onclick="shareVia('whatsapp')" class="w-12 h-12 flex items-center justify-center rounded-full bg-green-500 hover:bg-green-400 shadow-md transition">
-                            <i class="fab fa-whatsapp text-xl"></i>
+                    <div class="flex gap-4">
+                        <button onclick="copyReferralLink()"
+                            class="bg-amber-400 text-violet-900 py-3 px-6 rounded-lg font-bold shadow-md hover:bg-amber-300 transition duration-150 w-2/3">
+                            Copy Link to Share
                         </button>
 
-                        <button onclick="shareVia('messenger')" class="w-12 h-12 flex items-center justify-center rounded-full bg-blue-500 hover:bg-blue-400 shadow-md transition">
-                            <i class="fab fa-facebook-messenger text-xl"></i>
-                        </button>
-
-                        <button onclick="shareVia('email')" class="w-12 h-12 flex items-center justify-center rounded-full bg-amber-500 hover:bg-amber-400 shadow-md transition">
-                            <i class="fas fa-envelope text-xl"></i>
-                        </button>
-
-                        <button onclick="shareVia('twitter')" class="w-12 h-12 flex items-center justify-center rounded-full bg-sky-500 hover:bg-sky-400 shadow-md transition">
-                            <i class="fab fa-twitter text-xl"></i>
-                        </button>
-
-                        <button onclick="shareVia('linkedin')" title="Share on LinkedIn"
-                            class="w-12 h-12 flex items-center justify-center rounded-full bg-blue-700 hover:bg-blue-600 shadow-md transition">
-                            <i class="fab fa-linkedin-in text-xl"></i>
-                        </button>
-
-                        <button onclick="nativeShare()" class="w-12 h-12 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-violet-700 shadow-md transition">
+                        <button onclick="nativeShare()" class="bg-gray-200 hover:bg-gray-300 text-violet-700 py-3 px-6 rounded-lg font-bold shadow-md transition w-1/3 flex items-center justify-center">
                             <i class="fas fa-share-alt text-xl"></i>
                         </button>
                     </div>
