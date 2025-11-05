@@ -224,7 +224,7 @@ window.copyReferralLink = function() {
 
 function shareVia(platform) {
     const link = document.getElementById('dashboardReferralLink').value;
-    const message = encodeURIComponent("🚀 Try this awesome fintech app for money analysis! 💸 Check it out here: " + link);
+    const message = encodeURIComponent("🚀 Try this awesome website to fix your money! 💸 Check it out here: " + link);
     
     let shareUrl = '';
 
