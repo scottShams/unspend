@@ -1,6 +1,12 @@
 <?php
 // Landing/Home Page
 session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_email']) || empty($_SESSION['user_email'])) {
+    header('Location: index.php');
+    exit();
+}
 require 'vendor/autoload.php';
 require 'config/database.php';
 

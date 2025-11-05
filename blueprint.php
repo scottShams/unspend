@@ -3,9 +3,9 @@
 session_start();
 
 // Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit;
+if (!isset($_SESSION['user_email']) || empty($_SESSION['user_email'])) {
+    header('Location: index.php');
+    exit();
 }
 
 require 'vendor/autoload.php';
