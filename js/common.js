@@ -224,7 +224,12 @@ window.copyReferralLink = function() {
 
 function shareVia(platform) {
     const link = document.getElementById('dashboardReferralLink').value;
-    const message = encodeURIComponent("🚀 Try this awesome website to fix your money! 💸 Check it out here: " + link);
+    const message = encodeURIComponent(
+        "I never had the Time to check my bank statements properly to see Why my Money Run Out!\n" +
+        "This simple app is helping me see where my Money goes by Analysing my Bank statement within seconds, and Helping me Save!\n" +
+        "Use my link to get Free Credits for you.\n💸 Check it out here: " + link
+    );
+
     
     let shareUrl = '';
 
