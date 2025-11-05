@@ -16,7 +16,8 @@ CREATE TABLE users (
     blueprint_unlocked_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL,
-    analysis_count INT DEFAULT 0
+    analysis_count INT DEFAULT 0,
+    additional_credits INT DEFAULT 0
 );
 
 -- Update uploads table to reference users
@@ -26,6 +27,8 @@ ALTER TABLE uploads
 ADD CONSTRAINT fk_user_id 
 FOREIGN KEY (user_id) REFERENCES users(id) 
 ON DELETE CASCADE;
+
+ALTER TABLE users ADD COLUMN additional_credits INT DEFAULT 0;
 
 -- Create referral_clicks table to track anonymous clicks
 CREATE TABLE referral_clicks (
