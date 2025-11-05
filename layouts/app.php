@@ -28,6 +28,14 @@ if (isset($_SESSION['user_id'])) {
         $userHasAccount = true;
     }
 }
+
+// Get current domain dynamically
+$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+$domain = $protocol . "://" . $_SERVER['HTTP_HOST'];
+$currentUrl = $domain . $_SERVER['REQUEST_URI'];
+
+// Optional: dynamic referral image
+$shareImage = $domain . "/assets/images/share-preview.png";
 ?>
 
 <!DOCTYPE html>
@@ -36,9 +44,23 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
+    <link rel="shortcut icon" href="/assets/images/favicon_io/favicon.ico" type="image/x-icon">
     <?php if ($pageDescription): ?>
     <meta name="description" content="<?php echo htmlspecialchars($pageDescription); ?>">
     <?php endif; ?>
+    <!-- Open Graph Meta Tags for Link Sharing -->
+    <meta property="og:title" content="Try This Awesome Fintech App for Smart Money Analysis 💸">
+    <meta property="og:description" content="Analyze your finances, optimize spending, and earn rewards with your personal Fintech Blueprint. Join now for free!">
+    <meta property="og:image" content="<?php echo $shareImage; ?>">
+    <meta property="og:url" content="<?php echo htmlspecialchars($currentUrl); ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="unSpend">
+
+    <!-- Twitter Card Meta -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Try This Awesome Fintech App for Smart Money Analysis 💸">
+    <meta name="twitter:description" content="Analyze your finances, optimize spending, and earn rewards with your personal Fintech Blueprint.">
+    <meta name="twitter:image" content="<?php echo $shareImage; ?>">
 
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
