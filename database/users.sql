@@ -28,8 +28,6 @@ ADD CONSTRAINT fk_user_id
 FOREIGN KEY (user_id) REFERENCES users(id) 
 ON DELETE CASCADE;
 
-ALTER TABLE users ADD COLUMN additional_credits INT DEFAULT 0;
-
 -- Create referral_clicks table to track anonymous clicks
 CREATE TABLE referral_clicks (
     id INT AUTO_INCREMENT PRIMARY KEY,
