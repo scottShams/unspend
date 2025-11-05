@@ -44,23 +44,29 @@ $shareImage = $domain . "/assets/images/share-preview.png";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
-    <link rel="shortcut icon" href="/assets/images/favicon_io/favicon.ico" type="image/x-icon">
+
     <?php if ($pageDescription): ?>
     <meta name="description" content="<?php echo htmlspecialchars($pageDescription); ?>">
     <?php endif; ?>
-    <!-- Open Graph Meta Tags for Link Sharing -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon_io/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon_io/apple-touch-icon.png">
+    <link rel="manifest" href="/assets/images/favicon_io/site.webmanifest">
+
     <meta property="og:title" content="Try This Awesome Fintech App for Smart Money Analysis 💸">
     <meta property="og:description" content="Analyze your finances, optimize spending, and earn rewards with your personal Fintech Blueprint. Join now for free!">
     <meta property="og:image" content="<?php echo $shareImage; ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:url" content="<?php echo htmlspecialchars($currentUrl); ?>">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="unSpend">
 
-    <!-- Twitter Card Meta -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Try This Awesome Fintech App for Smart Money Analysis 💸">
     <meta name="twitter:description" content="Analyze your finances, optimize spending, and earn rewards with your personal Fintech Blueprint.">
     <meta name="twitter:image" content="<?php echo $shareImage; ?>">
+
 
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
