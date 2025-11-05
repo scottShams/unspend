@@ -73,18 +73,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["bankStatementFile"]))
                 $_SESSION['user_income'] = $user['income'];
             }
 
-            // Check if user has already analyzed 3 PDFs
-            $completedCount = $userManager->getCompletedAnalysisCount($user['id']);
-            if ($completedCount >= 3) {
-                $error = "You have already analyzed 3 PDFs. Please upgrade to continue.";
-                if ($isAjax) {
-                    echo json_encode(['success' => false, 'message' => $error]);
-                    exit;
-                } else {
-                    echo $error;
-                    exit;
-                }
-            }
+            // // Check if user has already analyzed 3 PDFs
+            // $completedCount = $userManager->getCompletedAnalysisCount($user['id']);
+            // if ($completedCount >= 3) {
+            //     $error = "You have already analyzed 3 PDFs. Please upgrade to continue.";
+            //     if ($isAjax) {
+            //         echo json_encode(['success' => false, 'message' => $error]);
+            //         exit;
+            //     } else {
+            //         echo $error;
+            //         exit;
+            //     }
+            // }
 
             // Check if this file has already been analyzed for this user
             $stmt = $pdo->prepare("SELECT analysis_result FROM uploads WHERE user_id = ? AND filename = ?");
