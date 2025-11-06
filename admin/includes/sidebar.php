@@ -1,10 +1,13 @@
 <!-- Sidebar -->
-<nav id="sidebar" class="col-md-2 d-none d-md-block border-end">
+<nav id="sidebar" class="col-md-2 border-end">
     <div class="sidebar-sticky p-3">
         <!-- Brand Header -->
         <div class="d-flex align-items-center mb-4 mt-2">
             <i class="bi bi-shield-check text-primary me-2 fs-4"></i>
             <h5 class="mb-0 fw-semibold">Admin Panel</h5>
+            <button class="btn btn-link d-md-none ms-auto" id="sidebarClose">
+                <i class="bi bi-x-lg fs-4 text-muted"></i>
+            </button>
         </div>
 
         <!-- Navigation Menu -->
