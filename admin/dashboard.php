@@ -10,114 +10,214 @@ $userCount = $db->query("SELECT COUNT(*) FROM users WHERE email != 'admin@unspen
 $verifiedCount = $db->query("SELECT COUNT(*) FROM users WHERE email_verified = 1 AND email != 'admin@unspend.com'")->fetchColumn();
 $referralCount = $db->query("SELECT COUNT(*) FROM referrals")->fetchColumn();
 $uploadCount = $db->query("SELECT COUNT(*) FROM uploads")->fetchColumn();
+
+// Get last 10 users
+$stmt = $db->prepare("SELECT id, name, email, email_verified, created_at, last_login FROM users WHERE email != 'admin@unspend.com' ORDER BY created_at DESC LIMIT 10");
+$stmt->execute();
+$recentUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<?php include 'includes/header.php'; ?>
-
-<div class="container-fluid">
-    <div class="row">
-        <?php include 'includes/sidebar.php'; ?>
-
-        <!-- Main content -->
-        <main id="main-content" class="col-md-10 ms-sm-auto px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Dashboard</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group mr-2">
-                        <span class="navbar-text">
-                            Welcome, <?php echo htmlspecialchars($_SESSION['admin_name']); ?>
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stats Cards -->
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="card text-white bg-primary mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Users</h5>
-                            <h2><?php echo $userCount; ?></h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-success mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Verified Users</h5>
-                            <h2><?php echo $verifiedCount; ?></h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-info mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Referrals</h5>
-                            <h2><?php echo $referralCount; ?></h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-white bg-warning mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Total Uploads</h5>
-                            <h2><?php echo $uploadCount; ?></h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+<?php
+ob_start();
+?>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+            <span class="navbar-text">
+                Welcome, <?php echo htmlspecialchars($_SESSION['admin_name']); ?>
+            </span>
+        </div>
     </div>
 </div>
 
+<!-- Stats Cards -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Users</h5>
+                <h2><?php echo $userCount; ?></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Verified Users</h5>
+                <h2><?php echo $verifiedCount; ?></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Referrals</h5>
+                <h2><?php echo $referralCount; ?></h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Uploads</h5>
+                <h2><?php echo $uploadCount; ?></h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Users -->
+<div class="mt-4">
+    <h3 class="mb-3">Recent Users</h3>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="recentUsersTable" class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Verified</th>
+                            <th>Created</th>
+                            <th>Last Login</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($recentUsers as $user): ?>
+                        <tr>
+                            <td><?php echo $user['id']; ?></td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm bg-light rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-person text-primary"></i>
+                                    </div>
+                                    <span><?php echo htmlspecialchars($user['name']); ?></span>
+                                </div>
+                            </td>
+                            <td><?php echo htmlspecialchars($user['email']); ?></td>
+                            <td>
+                                <?php if ($user['email_verified']): ?>
+                                    <span class="badge bg-success-subtle text-success px-2 py-1">
+                                        <i class="bi bi-check-circle me-1"></i>Verified
+                                    </span>
+                                <?php else: ?>
+                                    <span class="badge bg-warning-subtle text-warning px-2 py-1">
+                                        <i class="bi bi-exclamation-circle me-1"></i>Unverified
+                                    </span>
+                                <?php endif; ?>
+                            </td>
+                            <td><?php echo date('M d, Y H:i', strtotime($user['created_at'])); ?></td>
+                            <td>
+                                <?php if ($user['last_login']): ?>
+                                    <span class="text-muted" title="<?php echo date('Y-m-d H:i:s', strtotime($user['last_login'])); ?>">
+                                        <?php echo date('M d, Y H:i', strtotime($user['last_login'])); ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="text-danger">Never</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-end mt-3">
+                <a href="users.php" class="btn btn-primary">Show All Users</a>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+$content = ob_get_clean();
+include 'layout/app.php';
+?>
+
 <style>
-.sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 100;
-    padding: 48px 0 0;
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-    width: 250px;
+/* DataTables Custom Styling */
+.dataTables_wrapper .dataTables_length select {
+    min-width: 80px;
+    display: inline-block;
+    margin: 0 10px;
 }
 
-.sidebar-sticky {
-    position: relative;
-    top: 0;
-    height: calc(100vh - 48px);
-    padding-top: .5rem;
-    overflow-x: hidden;
-    overflow-y: auto;
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 10px;
+    min-width: 250px;
 }
 
-#main-content {
-    margin-left: 250px;
-    padding-top: 20px;
+.dataTables_wrapper .dataTables_info {
+    padding-top: 1rem;
 }
 
-.sidebar .nav-link {
-    font-weight: 500;
-    color: #333;
-}
-
-.sidebar .nav-link.active {
-    color: #007bff;
-}
-
-.sidebar .nav-link:hover {
-    color: #007bff;
-}
-
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        position: relative;
-    }
-    #main-content {
-        margin-left: 0;
-    }
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
 }
 </style>
 
-<?php include 'includes/footer.php'; ?>
+<script>
+$(document).ready(function() {
+    var table = $('#recentUsersTable').DataTable({
+        dom: '<"row mb-3"<"col-sm-12"f>>' +
+             '<"row"<"col-sm-12"tr>>' +
+             '<"row mt-3"<"col-sm-12 col-md-5"i>>',
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search users...",
+            info: "Showing _START_ to _END_ of _TOTAL_ users",
+            infoEmpty: "No users found",
+            infoFiltered: "(filtered from _MAX_ total users)"
+        },
+        paging: false,
+        ordering: true,
+        order: [[0, 'desc']], // Sort by ID in descending order
+        responsive: {
+            details: {
+                display: $.fn.dataTable.Responsive.display.modal({
+                    header: function(row) {
+                        var data = row.data();
+                        return 'Details for ' + data[1];
+                    }
+                }),
+                renderer: $.fn.dataTable.Responsive.renderer.tableAll()
+            }
+        },
+        columnDefs: [
+            {
+                targets: -1,
+                orderable: false
+            }
+        ],
+        buttons: [
+            {
+                extend: 'copy',
+                className: 'btn btn-sm btn-primary'
+            },
+            {
+                extend: 'excel',
+                className: 'btn btn-sm btn-primary'
+            },
+            {
+                extend: 'pdf',
+                className: 'btn btn-sm btn-primary'
+            },
+            {
+                extend: 'print',
+                className: 'btn btn-sm btn-primary'
+            }
+        ],
+        initComplete: function () {
+            // Add Bootstrap classes to DataTables elements
+            $('.dataTables_filter input').addClass('form-control form-control-sm');
+
+            // Create button container
+            var buttonContainer = $('<div class="text-end mb-3"></div>');
+            table.buttons().container().appendTo(buttonContainer);
+            $('.dataTables_filter').parent().after(buttonContainer);
+        }
+    });
+});
+</script>
