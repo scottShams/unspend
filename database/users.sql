@@ -20,6 +20,10 @@ CREATE TABLE users (
     additional_credits INT DEFAULT 0
 );
 
+ALTER TABLE users
+ADD COLUMN additional_credits_total INT DEFAULT 0 AFTER filename,
+
+
 -- Create referral_clicks table to track anonymous clicks
 CREATE TABLE referral_clicks (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,4 +47,16 @@ CREATE TABLE referrals (
     FOREIGN KEY (referrer_id) REFERENCES users(id),
     FOREIGN KEY (referred_user_id) REFERENCES users(id),
     UNIQUE KEY unique_referral (referrer_id, referred_user_id)
+);
+
+CREATE TABLE credit_purchases (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    plan_name VARCHAR(100),
+    credits_added INT NOT NULL,
+    amount_paid DECIMAL(10,2) DEFAULT 0,
+    payment_method VARCHAR(100),
+    transaction_id VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
