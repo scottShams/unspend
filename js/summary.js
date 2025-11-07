@@ -195,12 +195,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize file upload functionality for summary page
     initializeFileUpload();
 
-    // Auto-load latest analysis if available
-    if (window.analysisData && window.analysisData.expenses && window.analysisData.expenses.length > 0) {
-        renderSummaryPage();
-    } else if (window.latestAnalysisId) {
-        // Load the latest analysis from database
-        loadAnalysis(window.latestAnalysisId);
+    // Check URL parameters for section to show
+    const urlParams = new URLSearchParams(window.location.search);
+    const showSection = urlParams.get('show');
+
+    if (showSection === 'analysis') {
+        // Show analysis section and unlock button
+        if (historySection) historySection.classList.add('hidden');
+        if (analysisSection) analysisSection.classList.remove('hidden');
+        if (unlockBtn) unlockBtn.style.display = 'inline-block';
+
+        // Auto-load latest analysis if available
+        if (window.analysisData && window.analysisData.expenses && window.analysisData.expenses.length > 0) {
+            renderSummaryPage();
+        } else if (window.latestAnalysisId) {
+            // Load the latest analysis from database
+            loadAnalysis(window.latestAnalysisId);
+        }
+    } else {
+        // Default to history section on page load
+        if (historySection) historySection.classList.remove('hidden');
+        if (analysisSection) analysisSection.classList.add('hidden');
+        if (unlockBtn) unlockBtn.style.display = 'none';
     }
 
     if (historyTab) {
