@@ -20,14 +20,6 @@ CREATE TABLE users (
     additional_credits INT DEFAULT 0
 );
 
--- Update uploads table to reference users
-ALTER TABLE uploads 
-ADD COLUMN user_id INT NULL AFTER filename;
-ALTER TABLE uploads 
-ADD CONSTRAINT fk_user_id 
-FOREIGN KEY (user_id) REFERENCES users(id) 
-ON DELETE CASCADE;
-
 -- Create referral_clicks table to track anonymous clicks
 CREATE TABLE referral_clicks (
     id INT AUTO_INCREMENT PRIMARY KEY,
