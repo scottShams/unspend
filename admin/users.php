@@ -7,12 +7,48 @@ $db = Database::getInstance()->getConnection();
 
 // Handle delete action
 if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
-    $userId = $_GET['delete'];
-    $stmt = $db->prepare("DELETE FROM users WHERE id = ? AND email != 'admin@unspend.com'");
+    $userId = (int) $_GET['delete'];
+
+    // Prevent deleting main admin
+    $stmt = $db->prepare("SELECT email FROM users WHERE id = ?");
     $stmt->execute([$userId]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && $user['email'] !== 'admin@unspend.com') {
+
+        // Begin transaction for safe multiple deletions
+        $db->beginTransaction();
+
+        try {
+            // 1️⃣ Delete related uploads
+            $deleteUploads = $db->prepare("DELETE FROM uploads WHERE user_id = ?");
+            $deleteUploads->execute([$userId]);
+
+            // 2️⃣ Delete referrals where user is referrer or referred
+            $deleteReferrals = $db->prepare("
+                DELETE FROM referrals 
+                WHERE referrer_id = ? OR referred_user_id = ?
+            ");
+            $deleteReferrals->execute([$userId, $userId]);
+
+            // 3️⃣ Delete user from users table
+            $deleteUser = $db->prepare("DELETE FROM users WHERE id = ?");
+            $deleteUser->execute([$userId]);
+
+            // Commit transaction
+            $db->commit();
+
+        } catch (Exception $e) {
+            // Rollback in case of any failure
+            $db->rollBack();
+            error_log("Delete error: " . $e->getMessage());
+        }
+    }
+
     header('Location: users.php');
     exit;
 }
+
 
 // Get all users except admin
 $stmt = $db->prepare("SELECT id, name, email, email_verified, created_at, last_login FROM users WHERE email != 'admin@unspend.com' ORDER BY created_at DESC");
