@@ -7,7 +7,18 @@ CREATE TABLE uploads (
     upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     analysis_result TEXT,
     blueprint_result TEXT,
-    INDEX idx_user_id (user_id),
-    INDEX idx_user_email (user_email),
-    INDEX idx_upload_date (upload_date)
+    
+    -- Table-level constraint for Foreign Key (requires 'users' table to exist)
+    CONSTRAINT fk_user_id 
+        FOREIGN KEY (user_id) REFERENCES users(id) 
+        ON DELETE CASCADE,
+        
+    -- Creating an index on user_id as part of CREATE TABLE (often automatically done by FK)
+    INDEX idx_user_id (user_id);
+
+    -- Index on user_email
+    CREATE INDEX idx_user_email ON uploads (user_email);
+
+    -- Index on upload_date
+    CREATE INDEX idx_upload_date ON uploads (upload_date);
 );

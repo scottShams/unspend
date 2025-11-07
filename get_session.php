@@ -1,65 +1,56 @@
 <?php
 session_start();
+require_once 'config/database.php';
+require_once 'functions/user_management.php';
+header('Content-Type: application/json');
 
 $data = [
     'email' => $_SESSION['user_email'] ?? $_SESSION['temp_email'] ?? '',
     'name' => $_SESSION['user_name'] ?? $_SESSION['temp_name'] ?? '',
     'income' => $_SESSION['user_income'] ?? $_SESSION['temp_income'] ?? '',
     'analysis_count' => 0,
-    'additional_credits' => 0
+    'additional_credits' => 0,
+    'additional_credits_total' => 0,
+    'remaining_credits' => 0
 ];
 
-if (!empty($data['email'])) {
-    require_once 'config/database.php';
-    require_once 'functions/user_management.php';
-    $pdo = Database::getInstance()->getConnection();
-    $userMgmt = new UserManagement($pdo);
+try {
+    if (!empty($data['email'])) {
+        $pdo = Database::getInstance()->getConnection();
+        $userMgmt = new UserManagement($pdo);
+        $user = $userMgmt->getUserByEmail($data['email']);
 
-    $user = $userMgmt->getUserByEmail($data['email']);
-    if ($user) {
-        $analysisCount = $userMgmt->getCompletedAnalysisCount($user['id']);
-        $additionalCredits = (int)($user['additional_credits'] ?? 0);
+        if ($user) {
+            $analysisCount = $userMgmt->getCompletedAnalysisCount($user['id']);
+            $additionalCredits = (int)($user['additional_credits'] ?? 0);
+            $additionalCreditsTotal = (int)($user['additional_credits_total'] ?? 0);
 
-        // Calculate how many analyses are still allowed
-        $totalAllowed = $analysisCount + $additionalCredits;
-        $remaining = max(0, $totalAllowed - $analysisCount);
+            // Default free limit = 3
+            $freeLimit = 3;
 
-        $data['analysis_count'] = $analysisCount;
-        $data['additional_credits'] = $additionalCredits;
-        $data['remaining_credits'] = $remaining;
+            // Remaining credits = (free limit - used) + additional
+            $remaining = max(0, ($freeLimit - $analysisCount) + $additionalCredits);
 
-        // Update session
-        $_SESSION['additional_credits'] = $additionalCredits;
-    }
+            $data['analysis_count'] = $analysisCount;
+            $data['additional_credits'] = $additionalCredits;
+            $data['additional_credits_total'] = $additionalCreditsTotal;
+            $data['remaining_credits'] = $remaining;
 
-
-    if ($data['analysis_count'] >= 3 && (!isset($_SESSION['user_authorized']) || $_SESSION['user_authorized'] === false)) {
-        $referrerId = $_SESSION['referrer_id'] ?? null;
-
-        // Check if user is already logged in (existing user uploading another file)
-        if (isset($_SESSION['user_id'])) {
-            // Existing user - get their data from session
-            $user = [
-                'id' => $_SESSION['user_id'],
-                'email' => $_SESSION['user_email'],
-                'name' => $_SESSION['user_name'],
-                'income' => $_SESSION['user_income']
-            ];
-        } else {
-            // New user - create account
-            $user = $userMgmt->createOrGetUser($data['email'], $data['name'], $data['income'], null, $referrerId);
-            // Store user info in session
+            // add data at sessions
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_income'] = $user['income'];
+            
+            // Keep sessions updated
+            $_SESSION['additional_credits'] = $additionalCredits;
+            $_SESSION['additional_credits_total'] = $additionalCreditsTotal;
         }
-        // Update data array with new session values
-        $data['email'] = $_SESSION['user_email'];
-        $data['name'] = $_SESSION['user_name'];
-        $data['income'] = $_SESSION['user_income'];
     }
-}
 
-echo json_encode($data);
+    echo json_encode($data);
+} catch (Exception $e) {
+    error_log('get_session.php error: ' . $e->getMessage());
+    echo json_encode(['error' => 'Server error occurred']);
+}
 ?>
