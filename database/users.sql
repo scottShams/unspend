@@ -21,7 +21,7 @@ CREATE TABLE users (
 );
 
 ALTER TABLE users
-ADD COLUMN additional_credits_total INT DEFAULT 0 AFTER filename,
+ADD COLUMN additional_credits_total INT DEFAULT 0 AFTER analysis_count;
 
 
 -- Create referral_clicks table to track anonymous clicks
