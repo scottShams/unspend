@@ -1,52 +1,72 @@
 // Common JavaScript functions shared between pages
 
 // Modal Control Functions
-window.openModal = function(id) {
-    // Check analysis limit before opening upload modal
+window.openModal = function (id) {
     if (id === 'uploadModal' || id === 'contactModal') {
         fetch('get_session.php')
             .then(response => response.json())
             .then(data => {
-                // Check if user has reached the free limit (3 analyses) and has no additional credits
-                if (data.analysis_count == 3) {
+                console.log('Session data:', data);
+
+                const analysisCount = parseInt(data.analysis_count) || 0;
+                const additionalCredits = parseInt(data.additional_credits) || 0;
+                const totalPurchased = parseInt(data.additional_credits_total) || 0;
+                const remainingCredits = parseInt(data.remaining_credits) || 0;
+
+                //Case 1: Used all 3 free credits, never bought any
+                if (analysisCount >= 3 && totalPurchased === 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Analysis Limit Reached',
-                        text: 'You have already analyzed 3 PDFs. Please upgrade to continue.',
-                        confirmButtonText: 'Upgrade Now'
-                    }).then(() => {
-                        window.location.href = 'pricing.php';
+                        text: 'You’ve used your 3 free analyses. Please upgrade to continue.',
+                        confirmButtonText: 'Upgrade Now',
+                        showCancelButton: true,
+                        cancelButtonText: 'Maybe Later'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'pricing.php';
+                        }
                     });
                     return;
                 }
 
-                // Check if user has additional credits but has used them all
-                if (data.remaining_credits <= 0) {
+                // Case 2: User had purchased credits but used them all
+                if (analysisCount >= 3 && totalPurchased > 0 && additionalCredits <= 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Credits Exhausted',
-                        text: 'You have used all your purchased credits. Upgrade to continue analyzing PDFs.',
-                        confirmButtonText: 'Upgrade Now'
-                    }).then(() => {
-                        window.location.href = 'pricing.php';
+                        text: 'You’ve used all your purchased credits. Please buy more to continue analyzing.',
+                        confirmButtonText: 'Buy More Credits',
+                        showCancelButton: true,
+                        cancelButtonText: 'Maybe Later'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            window.location.href = 'pricing.php';
+                        }
                     });
                     return;
                 }
-                // Proceed to open modal
-                document.getElementById(id).classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Prevent scrolling background
-            })
-            .catch(error => {
-                console.error('Error checking analysis count:', error);
-                // Proceed to open modal on error
+
+                // Case 3: Still has free or purchased credits
                 document.getElementById(id).classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
+            })
+            .catch(error => {
+                console.error('Error checking analysis limit:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Connection Error',
+                    text: 'We couldn’t check your credits right now. Please try again shortly.'
+                });
             });
     } else {
+        // Open any other modal normally
         document.getElementById(id).classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling background
+        document.body.style.overflow = 'hidden';
     }
 };
+
+
 
 window.closeModal = function(id) {
     document.getElementById(id).classList.add('hidden');
@@ -191,8 +211,8 @@ function initializeFileUpload() {
                             console.warn('Failed to check session for credit decrement:', error);
                         });
 
-                    // Success — redirect to summary page
-                    window.location.href = 'summary.php';
+                    // Success — redirect to summary page with analysis section
+                    window.location.href = 'summary.php?show=analysis';
                 } else {
                     // Server returned an error message
                     if (preloader) preloader.classList.add('hidden');
@@ -211,7 +231,7 @@ function initializeFileUpload() {
                 // Check if it's a 504 timeout error - if so, redirect since data may still be processed
                 if (error.message.includes("504")) {
                     // Assume processing succeeded despite timeout, redirect to summary
-                    window.location.href = 'summary.php';
+                    window.location.href = 'summary.php?show=analysis';
                     return;
                 }
 
