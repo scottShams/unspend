@@ -51,7 +51,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 
 
 // Get all users except admin
-$stmt = $db->prepare("SELECT id, name, email, email_verified, created_at, last_login FROM users WHERE email != 'admin@unspend.com' ORDER BY created_at DESC");
+$stmt = $db->prepare("SELECT * FROM users WHERE email != 'admin@unspend.com' ORDER BY created_at DESC");
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -74,7 +74,9 @@ ob_start();
                         <th>Email</th>
                         <th>Verified</th>
                         <th>Created</th>
-                        <th>Last Login</th>
+                        <th>Used Credits</th>
+                        <th>Total Purchased Credits</th>
+                        <th>Avilalbe Credits</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -103,6 +105,7 @@ ob_start();
                             <?php endif; ?>
                         </td>
                         <td><?php echo date('M d, Y H:i', strtotime($user['created_at'])); ?></td>
+                        <!-- 
                         <td>
                             <?php if ($user['last_login']): ?>
                                 <span class="text-muted" title="<?php echo date('Y-m-d H:i:s', strtotime($user['last_login'])); ?>">
@@ -112,6 +115,10 @@ ob_start();
                                 <span class="text-danger">Never</span>
                             <?php endif; ?>
                         </td>
+                        -->
+                        <td><?php echo $user['analysis_count']; ?></td>
+                        <td><?php echo $user['additional_credits_total']; ?></td>
+                        <td><?php echo $user['additional_credits']; ?></td> 
                         <td>
                             <div class="d-flex gap-1">
                                 <a href="user_details.php?id=<?php echo $user['id']; ?>" class="btn btn-sm btn-primary">
