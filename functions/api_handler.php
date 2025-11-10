@@ -4,7 +4,7 @@ use GuzzleHttp\Client;
 // Load environment variables
 require_once __DIR__ . '/../config/env.php';
 
-function callGeminiAPI($rawStatement, $pdo, $userId, $filename) {
+function callGeminiAPI($rawStatement, $pdo, $userId, $filename, $currency = 'UNKNOWN') {
     // Get fresh PDO connection from database_handler.php
     require_once 'database_handler.php';
     try {
@@ -24,7 +24,7 @@ function callGeminiAPI($rawStatement, $pdo, $userId, $filename) {
     }
 
     // If no existing analysis, call the API with retry logic
-    return callOpenAIAPIWithRetry($rawStatement);
+    return callOpenAIAPIWithRetry($rawStatement, $currency);
 }
 
 function checkExistingAnalysis($pdo, $userId, $filename, $rawStatement) {
@@ -161,7 +161,7 @@ function callOpenAIAPI($rawStatement)
     }
 }
 
-function callOpenAIAPIWithRetry($rawStatement){
+function callOpenAIAPIWithRetry($rawStatement, $currency = 'UNKNOWN'){
     $maxRetries = 3;
     $wait = 2;
     $apiKey = getApiKey();
@@ -169,6 +169,17 @@ function callOpenAIAPIWithRetry($rawStatement){
 
     for ($i = 1; $i <= $maxRetries; $i++) {
         try {
+            $systemPrompt = <<<SYS
+            You are a financial analysis assistant. Return ONLY JSON strictly following the schema.
+            Rules:
+            1. The transactions are in currency: {$currency}. Use that currency for all totals. If currency is UNKNOWN, try to infer but prefer UNKNOWN -> ask fallback.
+            2. "isLeak" = discretionary spending (non-essential). Include real leaks only.
+            3. Generate at most 10 categories (essential + discretionary).
+            4. Do NOT create extra categories not present in the statement.
+            5. Numbers only (no symbols) for amounts.
+            6. JSON must validate schema.
+            SYS;
+
             $response = $client->chat()->create([
                 'model' => 'gpt-4o-mini',
                 'response_format' => [
@@ -214,23 +225,8 @@ function callOpenAIAPIWithRetry($rawStatement){
                     ]
                 ],
                 'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => <<<SYS
-You are a financial analysis assistant. Return ONLY JSON strictly following the schema.
-Rules:
-1. Detect the correct currency (USD, EUR, BDT, AED, etc.) from symbols or context. All totals in this currency.
-2. "isLeak" = discretionary spending (non-essential). Include real leaks only.
-3. Generate at most 10 categories (essential + discretionary).
-4. Do NOT create extra categories not present in the statement.
-5. Numbers only (no symbols) for amounts.
-6. JSON must validate schema.
-SYS
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => "Analyze this CSV of transactions:\n\n{$rawStatement}"
-                    ]
+                    ['role' => 'system', 'content' => $systemPrompt],
+                    ['role' => 'user', 'content' => "Analyze this CSV of transactions (currency: {$currency}).\n\n{$rawStatement}"]
                 ],
             ]);
 
@@ -246,6 +242,7 @@ SYS
         }
     }
 }
+
 
 function generateBlueprintWithOpenAI($analysisData, $userInfo = null) {
     $analysisData = preg_replace('/\s+/', ' ', $analysisData); // remove extra whitespace
