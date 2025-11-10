@@ -9,7 +9,7 @@
                     Set Your Password
                 </h2>
                 <p class="text-center text-gray-500 mb-8">
-                    We found your account. Please set a password to continue.
+                    Hi <?php echo $existingUser['name']; ?>, please set a Password for your account with email address: <?php echo $existingUser['email']; ?>
                 </p>
                 <form id="setPasswordForm" class="space-y-6" onsubmit="setUserPassword(event)" action="login_process.php" method="POST">
                     <div>
