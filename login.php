@@ -14,11 +14,13 @@ if (isset($_SESSION['user_authorized']) && $_SESSION['user_authorized'] === true
 $userExistsInDB = false;
 $userNeedsPassword = false;
 
-if (isset($_SESSION['temp_email'])) {
+if (isset($_SESSION['temp_email']) || isset($_COOKIE['user_email'])) {
     require_once 'functions/user_management.php';
     $db = Database::getInstance();
     $userManager = new UserManagement($db->getConnection());
-    $existingUser = $userManager->getUserByEmail($_SESSION['temp_email']);
+    $email = $_SESSION['temp_email'] ?? $_COOKIE['user_email'] ?? '';
+
+    $existingUser = $userManager->getUserByEmail($email);
 
     if ($existingUser) {
         $userExistsInDB = true;
