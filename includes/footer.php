@@ -83,6 +83,14 @@
                 <div class="mt-6">
                     <!-- File Upload Form -->
                     <form id="uploadForm" method="POST" enctype="multipart/form-data" action="functions/process_upload.php">
+                        <!-- Agreement Checkbox -->
+                        <div class="mb-4">
+                            <label class="flex items-center text-sm text-gray-300">
+                                <input type="checkbox" id="agreeTerms" name="agreeTerms" required class="mr-2 h-4 w-4 text-amber-500 bg-gray-700 border-gray-600 rounded focus:ring-amber-500 focus:ring-2">
+                                <span>I agree to the terms and conditions and consent to the AI analysis of my bank statement data.</span>
+                            </label>
+                        </div>
+                        
                         <!-- Hidden email will be added by JS -->
                         <label id="uploadLabel" class="flat-cta w-full flex justify-center items-center text-white py-3 rounded-lg font-bold text-lg uppercase shadow-xl cursor-pointer">
                             <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
