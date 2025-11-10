@@ -9,12 +9,25 @@
                 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
                     STOP Overspending. Analyse your Expense <br />and Start Growing Wealth.
                 </h1>
-                <p class="text-xl sm:text-2xl text-red-600 font-semibold mb-8">
-                    <span class="bg-yellow-100 px-3 py-1 rounded-full inline-block">The clock is ticking.</span> Are you struggling to Save and Get Richer, but don't know why you're not progressing? Start by Understanding Your Expenses properly.
-                </p>
 
+				<br />
+                <br />
+
+ 				<!-- Primary CTA -->
+                <div id="cta">
+                    <a href="#" class="flat-cta text-lg sm:text-xl md:text-2xl lg:text-3xl text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-xl font-bold uppercase shadow-2xl tracking-wider cta-trigger block text-center" data-user-has-account="<?php echo $userHasAccount ? 'true' : 'false'; ?>">
+                        <?php echo $userHasAccount ? 'Upload Another Statement' : 'Start Your 3 Months FREE Analysis Now!'; ?>
+                    </a>
+                    <p class="mt-4 text-sm text-gray-500">
+                        <?php echo $userHasAccount ? 'Analyze additional bank statements for deeper insights.' : 'No credit card required for your first 90 days of clarity.'; ?>
+                        
+                       
+                    </p>
+                </div>
+                
                 <!-- Key Highlights & Benefits -->
                 <div class="mb-10 flex flex-wrap justify-center gap-4 sm:gap-8 max-w-4xl mx-auto">
+                        
                     <span class="flex items-center text-lg text-gray-700 bg-violet-100 rounded-full px-4 py-2 shadow-sm font-medium">
                         <svg class="w-6 h-6 mr-2 text-violet-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         AI-Driven Expense Categorization
@@ -29,15 +42,9 @@
                     </span>
                 </div>
 
-                <!-- Primary CTA -->
-                <div id="cta">
-                    <a href="#" class="flat-cta text-lg sm:text-xl md:text-2xl lg:text-3xl text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-xl font-bold uppercase shadow-2xl tracking-wider cta-trigger block text-center" data-user-has-account="<?php echo $userHasAccount ? 'true' : 'false'; ?>">
-                        <?php echo $userHasAccount ? 'Upload Another Statement' : 'Start Your 3 Months FREE Analysis Now!'; ?>
-                    </a>
-                    <p class="mt-4 text-sm text-gray-500">
-                        <?php echo $userHasAccount ? 'Analyze additional bank statements for deeper insights.' : 'No credit card required for your first 90 days of clarity.'; ?>
-                    </p>
-                </div>
+ 				<p class="text-xl sm:text-2xl text-red-600 font-semibold mb-8">
+                    <span class="bg-yellow-100 px-3 py-1 rounded-full inline-block">Go Ahead and Upload your Bank Statement.</span> Are you struggling to Save and Get Richer, but don't know why you're not progressing? Most people Fail to manage their Expenses properly. Transform your life, Start Today with our AI Driven Expense Analysis to get you on the Right Track.
+                </p>
             </div>
         </section>
 
@@ -62,7 +69,7 @@
         <!-- Features & AI Analysis Section (Content Omitted for brevity, retaining structure) -->
         <section class="py-20" id="features">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="text-4xl font-extrabold text-gray-900 mb-12 text-center">How AxiomSpend Reveals Your Financial Blind Spots</h2>
+                <h2 class="text-4xl font-extrabold text-gray-900 mb-12 text-center">How UnSpend Reveals Your Financial Blind Spots</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 
@@ -95,9 +102,9 @@
         <section class="py-16 bg-red-600" id="blueprint-upgrade">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center bg-white p-8 rounded-xl shadow-2xl border-4 border-yellow-400">
                 <h2 class="text-4xl font-extrabold text-gray-900 mb-4">The Missing Piece: Stop Living Paycheck-to-Paycheck</h2>
-                <p class="text-xl text-gray-700 mb-6">You have the data. Now, get the <strong>AI-Driven Action Plan</strong> designed to bridge the gap between knowing your habits and achieving lasting wealth. This is the only step between you and financial freedom.</p>
+                <p class="text-xl text-gray-700 mb-6">You have the data. Now, get the <strong>AI-Driven Action Plan</strong> to Help you know what to do to Transform your Spending Habits and Start Building Wealth. You are <strong>ONE STEP Away </strong>from the start of Transformation.</p>
                 <p class="text-5xl font-extrabold text-amber-500 mb-8">
-                    Unlock the Blueprint <span class="text-red-600">|</span> Just $57 <span class="text-lg font-medium text-gray-500 block sm:inline">(One-Time Payment)</span>
+                    Unlock the Blueprint <span class="text-red-600">|</span> Only $37 <span class="text-lg font-medium text-gray-500 block sm:inline"><br />(One-Time Payment)</span>
                 </p>
 
                 <a href="#" class="bg-red-600 hover:bg-red-700 text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-xl font-bold text-lg sm:text-xl uppercase shadow-2xl tracking-wider cta-trigger block text-center">
@@ -117,7 +124,7 @@
                     <!-- Testimonial 1 -->
                     <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-violet-700">
                         <p class="text-2xl text-gray-700 italic mb-4">
-                            "I thought I was 'good' with money. AxiomSpend showed me I was losing $300 a month on subscription creep and impulsive Amazon buys. After 3 months, I'm already investing that money instead!"
+                            "I thought I was 'good' with money. UnSpend showed me I was losing $300 a month on subscription creep and impulsive Amazon buys. After 3 months, I'm already investing that money instead!"
                         </p>
                         <p class="font-bold text-gray-900">— Sarah K., Marketing Manager</p>
                         <p class="text-sm text-violet-700">Identified $3,600/year in unnecessary spending.</p>
@@ -145,37 +152,38 @@
 
                     <!-- Plan 1: Free Trial -->
                     <div class="bg-white p-8 rounded-xl shadow-2xl border-4 border-yellow-400">
-                        <h3 class="text-3xl font-bold mb-4 text-yellow-600">Trial Access</h3>
+                        <h3 class="text-3xl font-bold mb-4 text-yellow-600">3 FREE Credits</h3>
                         <p class="text-5xl font-extrabold mb-6">$0</p>
                         <p class="text-gray-600 mb-8 font-medium">Analyze your first 3 months of bank statements to get a taste of true financial control.</p>
                         <ul class="text-left space-y-3 text-gray-700 mb-8">
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 3 Months of Analysis</li>
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> AI Categorization & Summary</li>
                             <li class="flex items-center text-gray-400"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg> Monthly Upload Reminder (X)</li>
-                            <li class="flex items-center mt-4 text-sm font-semibold text-red-600">**+ Optional $57 Blueprint Upgrade**</li>
+                            <li class="flex items-center mt-4 text-sm font-semibold text-red-600">**+ Optional  <a href="what-is-the-blueprint"> Blueprint </a> Upgrade**</li>
                         </ul>
                         <a href="#" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-lg shadow-md block cta-trigger" data-user-has-account="<?php echo $userHasAccount ? 'true' : 'false'; ?>"><?php echo $userHasAccount ? 'Upload Statement' : 'Get Started FREE'; ?></a>
                     </div>
 
                     <!-- Plan 2: Monthly Subscription (Featured) -->
                     <div class="bg-purple-900 p-8 rounded-xl shadow-2xl transform scale-105 border-4 border-amber-400">
-                        <h3 class="text-3xl font-bold mb-4 text-amber-400">Monthly Insights <span class="text-base font-normal block">(Subscription)</span></h3>
-                        <p class="text-5xl font-extrabold mb-6 text-white">$4.99/mo</p>
+                        <h3 class="text-3xl font-bold mb-4 text-amber-400">Monthly Insights</h3>
+                        <p class="text-5xl font-extrabold mb-6 text-white"><span class="text-base font-normal block">$4.99/1 credit</span>$1.99</p>
                         <p class="text-purple-200 mb-8 font-medium">Continuous, up-to-date analysis to ensure your spending habits stay optimized month after month.</p>
                         <ul class="text-left space-y-3 text-white mb-8">
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Unlimited Monthly Analyses</li>
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> AI Categorization & Summary</li>
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Pattern Detection</li>
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Monthly Upload Reminder</li>
-                            <li class="flex items-center mt-4 text-sm font-semibold text-amber-300">**+ Optional $57 Blueprint Upgrade**</li>
+                            <li class="flex items-center mt-4 text-sm font-semibold text-amber-300">**+ Optional <a href="what-is-the-blueprint"> Blueprint </a> Upgrade**</li>
                         </ul>
                         <a href="#" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg shadow-md block cta-trigger" data-user-has-account="<?php echo $userHasAccount ? 'true' : 'false'; ?>"><?php echo $userHasAccount ? 'Upload Statement' : 'Subscribe Now'; ?></a>
                     </div>
 
                     <!-- Plan 3: Annual Subscription -->
                     <div class="bg-white p-8 rounded-xl shadow-2xl border-4 border-yellow-400">
-                        <h3 class="text-3xl font-bold mb-4 text-yellow-600">Annual Clarity <span class="text-base font-normal block">(Subscription)</span></h3>
-                        <p class="text-5xl font-extrabold mb-6">$49.99/yr</p>
+                        <h3 class="text-3xl font-bold mb-4 text-yellow-600">Annual Clarity </h3>
+                        <p class="text-5xl font-extrabold mb-6">
+                       <p class="text-5xl font-extrabold mb-6 text-white"><span class="text-base font-normal block">$19.99/12 credit</span>$49.99</p>
                         <p class="text-gray-600 mb-8 font-medium">Commit to a year of financial mastery and save big—get two months free!</p>
                         <ul class="text-left space-y-3 text-gray-700 mb-8">
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Unlimited Analyses</li>
@@ -183,7 +191,7 @@
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Pattern Detection</li>
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Monthly Upload Reminder</li>
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Priority Support</li>
-                            <li class="flex items-center mt-4 text-sm font-semibold text-red-600">**+ Optional $57 Blueprint Upgrade**</li>
+                            <li class="flex items-center mt-4 text-sm font-semibold text-red-600">**+ Optional  <a href="what-is-the-blueprint"> Blueprint </a> Upgrade**</li>
                         </ul>
                         <a href="#" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-lg shadow-md block cta-trigger" data-user-has-account="<?php echo $userHasAccount ? 'true' : 'false'; ?>"><?php echo $userHasAccount ? 'Upload Statement' : 'Subscribe Annual & Save'; ?></a>
                     </div>

@@ -46,20 +46,20 @@
         <div class="inline-block align-middle bg-gray-800 rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border-t-8 border-amber-500">
             <div class="p-8">
                 <div class="flex justify-between items-start mb-4">
-                    <h3 class="text-2xl font-bold text-amber-400" id="modal-title-upload">Step 2: Start AI Analysis</h3>
+                    <h3 class="text-2xl font-bold text-amber-400" id="modal-title-upload">Step 2:  Start AI Analysis</h3>
                     <button onclick="closeModal('uploadModal')" class="text-gray-400 hover:text-white">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
 
-                <p class="text-gray-300 mb-6">Select a file below to begin the analysis. Our AI will securely process the content to categorize and summarize your spending.</p>
+                <p class="text-gray-300 mb-6">&lt;FNAME, Select a file below to begin the analysis. Our AI will securely process the content to categorize and summarize your spending.</p>
 
                 <div class="bg-gray-700 p-5 rounded-lg space-y-4">
                     <div class="flex items-start">
                         <span class="text-amber-400 text-xl mr-3 font-extrabold">1.</span>
                         <div>
                             <h4 class="font-bold text-white">Required Format</h4>
-                            <p class="text-gray-400">Your file **must** be a **PDF** or **CSV** export from your bank or credit card provider.</p>
+                            <p class="text-gray-400">Your file <strong>must</strong> be a <strong>PDF</strong> or <strong>CSV</strong> export from your bank or credit card provider.</p>
                         </div>
                     </div>
 
@@ -67,7 +67,7 @@
                         <span class="text-amber-400 text-xl mr-3 font-extrabold">2.</span>
                         <div>
                             <h4 class="font-bold text-white">One Month, Strict Dates</h4>
-                            <p class="text-gray-400">The statement **must cover only one full calendar month**. All transaction dates inside the file should fall within that specific month (e.g., January 1st to January 31st). This isolates habits for precise pattern detection.</p>
+                            <p class="text-gray-400">The statement <strong>must cover only one full calendar month</strong>. If the dates are more than 1 month we will automatically analyse only the first 30 days on your statement. Ideally, all transaction dates inside the file should fall within that specific month (e.g., January 1st to January 31st). This isolates habits for precise pattern detection.</p>
                         </div>
                     </div>
 
@@ -152,4 +152,3 @@
     // Make userHasAccount available to JavaScript
     window.userHasAccount = <?php echo $userHasAccount ? 'true' : 'false'; ?>;
 </script>
-

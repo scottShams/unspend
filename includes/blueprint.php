@@ -508,7 +508,7 @@ function determineBlueprintData($data) {
                                 Cancel
                             </button>
                             <button type="submit" class="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
-                                Unlock Blueprint
+                                Unlock My Blueprint
                             </button>
                         </div>
                     </form>
@@ -524,11 +524,11 @@ function determineBlueprintData($data) {
 
             <header class="text-center mb-10">
                 <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-2">
-                    Your Personalized Wealth Blueprint
+                    &lt;FName&gt;, Here's Your Personalized Wealth Blueprint
                 </h1>
                 <p id="blueprintIntro" class="text-xl text-indigo-600 font-semibold">
                     <?php if (isset($blueprintData['key_insights']) && is_array($blueprintData['key_insights'])): ?>
-                        Action Plan to Build Wealth - Financial Health Score: <?php echo number_format($blueprintData['financial_health_score'] ?? 0, 1); ?>/100
+                        Follow this Action Plan to help you Manage your Finances better and Build Wealth <br /> You Financial Health Score is: <?php echo number_format($blueprintData['financial_health_score'] ?? 0, 1); ?>/100
                     <?php else: ?>
                         Action Plan to Recover <?php echo $currencySymbol; ?><?php echo number_format($blueprintData['leakTotal'] ?? 0, 2); ?> in Monthly Leaks.
                     <?php endif; ?>
@@ -539,8 +539,9 @@ function determineBlueprintData($data) {
             <section class="mb-12 border-b pb-8">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">1. Your Personalized 50/30/20 Snapshot</h2>
                 <p class="text-lg text-gray-600 mb-8">
-                    The **50/30/20 Rule** is the industry standard for financial health. Below is your current allocation, revealing exactly where your money is currently going versus the target.
-                </p>
+                &lt;FNAME&gt;, based on your needs we can identify from your bank statement, it seems the <strong>50/30/20 Rule</strong> will be well suited to you. This rule for managing finances better is the industry standard for financial health. Below is your current allocation, revealing exactly where your money is currently going versus the target. </p>
+                <p class="text-lg text-gray-600 mb-8">&nbsp;</p>
+                <p class="text-lg text-gray-600 mb-8">Here  is how you should ideally be allocating your monthly income, which will allow you to live comfortably within your means, as well as work on doing some background money management that will help you build wealth over the longer term.</p>
 
                 <div class="flex flex-col lg:flex-row items-center justify-between gap-10">
 
@@ -551,7 +552,9 @@ function determineBlueprintData($data) {
                                 <span class="text-2xl font-bold text-gray-800" id="currentIncomeDisplay"><?php echo $currencySymbol; ?><?php echo number_format($user['income'] ?? 0, 0); ?></span>
                                 <span class="text-sm text-gray-500">Your Income</span>
                             </div>
-                        </div>
+                            
+                            
+                      </div>
                     </div>
 
                     <!-- Legend and Details (Dynamic) -->
@@ -562,15 +565,15 @@ function determineBlueprintData($data) {
                                     <div class="w-4 h-4 bg-emerald-500 rounded-full mt-1 flex-shrink-0"></div>
                                     <div>
                                         <h3 class="text-xl font-semibold text-gray-800"><span id="needsActual"><?php echo number_format($blueprintData['wealth_allocation']['needs_percent'] ?? 50, 1); ?>%</span> Needs <span class="text-emerald-600 text-base ml-2"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['wealth_allocation']['needs_amount'] ?? 0, 2); ?></span></h3>
-                                        <p class="text-gray-600 text-sm">Essential, fixed costs (rent, utilities, required debt payments).</p>
+                                        <p class="text-gray-600 text-sm">Essential, fixed costs like rent/mortgage, minimum loan payments, utilities, and basic groceries. <strong>Goal:</strong> Ensure 50% or less of your income covers only these essentials.</p>
                                     </div>
                                 </div>
 
                                 <div class="p-4 bg-amber-50 rounded-lg flex items-start gap-4 shadow">
                                     <div class="w-4 h-4 bg-amber-500 rounded-full mt-1 flex-shrink-0"></div>
                                     <div>
-                                        <h3 class="text-xl font-semibold text-gray-800"><span id="wantsActual"><?php echo number_format($blueprintData['wealth_allocation']['wants_percent'] ?? 30, 1); ?>%</span> Wants <span class="text-amber-600 text-base ml-2"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['wealth_allocation']['wants_amount'] ?? 0, 2); ?></span></h3>
-                                        <p class="text-gray-600 text-sm">Discretionary spending (dining, entertainment, non-essential shopping).</p>
+                                        <h3 class="text-xl font-semibold text-gray-800"><span id="wantsActual"><?php echo number_format($blueprintData['wealth_allocation']['wants_percent'] ?? 30, 1); ?>%</span> Wants <span class="text-amber-600 text-base ml-2">You should be Spending at most: <?php echo $currencySymbol; ?><?php echo number_format($blueprintData['wealth_allocation']['wants_amount'] ?? 0, 2); ?></span></h3>
+                                        <p class="text-gray-600 text-sm">Discretionary spending: dining out, entertainment, hobbies, travel, premium subscriptions, and non-essential shopping. <strong>Goal:</strong> This is your primary target for trimming excess spending.</p>
                                     </div>
                                 </div>
 
@@ -578,7 +581,7 @@ function determineBlueprintData($data) {
                                     <div class="w-4 h-4 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
                                     <div>
                                         <h3 class="text-xl font-semibold text-gray-800"><span id="saveActual"><?php echo number_format($blueprintData['wealth_allocation']['savings_percent'] ?? 20, 1); ?>%</span> Save & Invest <span class="text-blue-600 text-base ml-2"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['wealth_allocation']['savings_amount'] ?? 0, 2); ?></span></h3>
-                                        <p class="text-gray-600 text-sm">Emergency fund, retirement, investments.</p>
+                                        <p class="text-gray-600 text-sm">Funding your future: Emergency Fund contributions, retirement accounts, stock/index fund investments, and accelerated debt repayment. <strong>Goal:</strong> Automate this 20% first (Pay Yourself First).</p>
                                     </div>
                                 </div>
                             <?php else: ?>
