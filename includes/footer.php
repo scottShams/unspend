@@ -159,4 +159,33 @@
 
     // Make userHasAccount available to JavaScript
     window.userHasAccount = <?php echo $userHasAccount ? 'true' : 'false'; ?>;
+
+    // Contact Form Handler
+    document.addEventListener('DOMContentLoaded', function() {
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('modal-name')?.value;
+                const email = document.getElementById('modal-email')?.value;
+                const income = document.getElementById('modal-income')?.value;
+                
+                if (name && email && income) {
+                    // Save user data to cookies (expires in 15 days)
+                    setCookie('user_name', name, 15);
+                    setCookie('user_email', email, 15);
+                    setCookie('user_income', income, 15);
+                    
+                    // Close contact modal and open upload modal
+                    closeModal('contactModal');
+                    
+                    // Small delay to ensure contact modal is fully closed
+                    setTimeout(() => {
+                        openModal('uploadModal');
+                    }, 100);
+                }
+            });
+        }
+    });
 </script>

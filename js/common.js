@@ -1,5 +1,39 @@
 // Common JavaScript functions shared between pages
 
+// Cookie utility functions
+function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+function checkUserDataCookies() {
+    const name = getCookie('user_name');
+    const email = getCookie('user_email');
+    const income = getCookie('user_income');
+    
+    return name && email && income;
+}
+
+function getUserDataFromCookies() {
+    return {
+        name: getCookie('user_name'),
+        email: getCookie('user_email'),
+        income: getCookie('user_income')
+    };
+}
+
 // Modal Control Functions
 window.openModal = function (id) {
     if (id === 'uploadModal' || id === 'contactModal') {
@@ -35,6 +69,9 @@ window.openModal = function (id) {
                     }).then(result => {
                         if (result.isConfirmed) {
                             window.location.href = 'pricing.php';
+                        } else if (result.isDismissed) {
+                            // Reload the existing page
+                            location.reload();
                         }
                     });
                     return;
@@ -45,13 +82,16 @@ window.openModal = function (id) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Credits Exhausted',
-                        text: `${data.name}! You’ve used all your purchased credits. You last Analysed your Spending on ${formattedDate}.\n\nPlease buy more to continue analyzing.`,
+                        text: `${data.name}! You've used all your purchased credits. You last Analysed your Spending on ${formattedDate}.\n\nPlease buy more to continue analyzing.`,
                         confirmButtonText: 'Buy More Credits',
                         showCancelButton: true,
                         cancelButtonText: 'Maybe Later'
                     }).then(result => {
                         if (result.isConfirmed) {
                             window.location.href = 'pricing.php';
+                        } else if (result.isDismissed) {
+                            // Reload the existing page
+                            location.reload();
                         }
                     });
                     return;
@@ -66,7 +106,7 @@ window.openModal = function (id) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Connection Error',
-                    text: 'We couldn’t check your credits right now. Please try again shortly.'
+                    text: 'We couldn`t check your credits right now. Please try again shortly.'
                 });
             });
     } else {
@@ -105,9 +145,9 @@ window.closeModal = function(id) {
 
 // Upload Modal Trigger
 window.openUploadModal = function() {
-    // Check if user has account - if yes, skip to upload step
-    if (window.userHasAccount) {
-        // For existing users, go directly to upload modal
+    // Check if user has account OR if user data is stored in cookies
+    if (window.userHasAccount || checkUserDataCookies()) {
+        // For existing users or users with cookie data, go directly to upload modal
         openModal('uploadModal');
     } else {
         // For new users, start with contact modal
@@ -168,9 +208,29 @@ function initializeFileUpload() {
                     formData.append('modal-email', sessionData.email);
                     formData.append('modal-name', sessionData.name);
                     formData.append('modal-income', sessionData.income);
+                } else {
+                    // Fallback to cookie data if session data is not available
+                    const userData = getUserDataFromCookies();
+                    if (userData.name && userData.email && userData.income) {
+                        formData.append('modal-email', userData.email);
+                        formData.append('modal-name', userData.name);
+                        formData.append('modal-income', userData.income);
+                    }
                 }
             } catch (error) {
                 console.warn('Could not fetch session data:', error);
+                
+                // Fallback to cookie data if session fetch fails
+                try {
+                    const userData = getUserDataFromCookies();
+                    if (userData.name && userData.email && userData.income) {
+                        formData.append('modal-email', userData.email);
+                        formData.append('modal-name', userData.name);
+                        formData.append('modal-income', userData.income);
+                    }
+                } catch (cookieError) {
+                    console.warn('Could not get cookie data:', cookieError);
+                }
             }
 
             fetch('functions/process_upload.php', {
