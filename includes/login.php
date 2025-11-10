@@ -20,7 +20,7 @@
                         <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
                         <input type="password" name="confirm_password" id="confirm-password" required autocomplete="new-password" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-violet-700 focus:border-violet-700" placeholder="••••••••">
                     </div>
-                    <input type="hidden" name="email" value="<?php echo htmlspecialchars($_SESSION['temp_email']); ?>">
+                    <input type="hidden" name="email" value="<?php echo htmlspecialchars($_SESSION['temp_email'] ?? $_COOKIE['user_email'] ?? ''); ?>">
                     <input type="hidden" name="action" value="set_password">
 
                     <div id="set-password-status" class="text-center font-medium h-5"></div>
@@ -41,7 +41,7 @@
                     <input type="hidden" name="action" value="login">
                     <div>
                         <label for="login-email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                        <input type="email" name="email" id="login-email" required autocomplete="email" value="<?php echo htmlspecialchars($_SESSION['temp_email'] ?? ''); ?>" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-violet-700 focus:border-violet-700" placeholder="your.email@example.com">
+                        <input type="email" name="email" id="login-email" required autocomplete="email" value="<?php echo htmlspecialchars($_SESSION['temp_email'] ?? $_COOKIE['user_email'] ?? ''); ?>" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-violet-700 focus:border-violet-700" placeholder="your.email@example.com">
                     </div>
                     <div>
                         <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
