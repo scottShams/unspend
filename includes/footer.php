@@ -85,9 +85,15 @@
                     <form id="uploadForm" method="POST" enctype="multipart/form-data" action="functions/process_upload.php">
                         <!-- Agreement Checkbox -->
                         <div class="mb-4">
-                            <label class="flex items-center text-sm text-gray-300">
-                                <input type="checkbox" id="agreeTerms" name="agreeTerms" required class="mr-2 h-4 w-4 text-amber-500 bg-gray-700 border-gray-600 rounded focus:ring-amber-500 focus:ring-2">
-                                <span>I agree to the terms and conditions and consent to the AI analysis of my bank statement data.</span>
+                            <label class="flex items-start text-sm text-gray-300">
+                                <input type="checkbox" id="agreeTerms" name="agreeTerms" required class="mr-2 h-4 w-4 text-amber-500 bg-gray-700 border-gray-600 rounded focus:ring-amber-500 focus:ring-2 mt-0.5">
+                                <span>
+                                    I agree to the
+                                    <a href="terms.php" target="_blank" class="text-amber-400 hover:text-amber-300 underline">Terms and Conditions</a>
+                                    and
+                                    <a href="privacy.php" target="_blank" class="text-amber-400 hover:text-amber-300 underline">Privacy Policy</a>,
+                                    and consent to the AI analysis of my bank statement data.
+                                </span>
                             </label>
                         </div>
                         
