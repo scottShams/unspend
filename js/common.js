@@ -13,12 +13,22 @@ window.openModal = function (id) {
                 const totalPurchased = parseInt(data.additional_credits_total) || 0;
                 const remainingCredits = parseInt(data.remaining_credits) || 0;
 
+                // Convert your date string to a JS Date object
+                const rawDate = data.last_analysis_date; // "2025-11-07 16:28:18"
+                const dateObj = new Date(rawDate);
+
+                // Options for formatting
+                const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+
+                // Format the date
+                const formattedDate = dateObj.toLocaleString('en-US', options);
+
                 //Case 1: Used all 3 free credits, never bought any
                 if (analysisCount >= 3 && totalPurchased === 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Analysis Limit Reached',
-                        text: 'You’ve used your 3 free analyses. Please upgrade to continue.',
+                        text: `Hi ${data.name}! You've used your 3 free analyses. You last Analysed your Spending on ${formattedDate}.\n\nYou can get more Credits by clicking the Upgrade Now Button`,
                         confirmButtonText: 'Upgrade Now',
                         showCancelButton: true,
                         cancelButtonText: 'Maybe Later'
@@ -35,7 +45,7 @@ window.openModal = function (id) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Credits Exhausted',
-                        text: 'You’ve used all your purchased credits. Please buy more to continue analyzing.',
+                        text: `${data.name}! You’ve used all your purchased credits. You last Analysed your Spending on ${formattedDate}.\n\nPlease buy more to continue analyzing.`,
                         confirmButtonText: 'Buy More Credits',
                         showCancelButton: true,
                         cancelButtonText: 'Maybe Later'

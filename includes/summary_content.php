@@ -6,8 +6,8 @@
 
                 <!-- Include footer modals for upload functionality -->
                 <?php include 'footer.php'; ?>
-                <h1 class="text-5xl font-extrabold text-gray-900 text-center mb-4"><?php echo htmlspecialchars($userName); ?>'s Expense Summary</h1>
-                <p class="text-center mb-4"><?php echo htmlspecialchars($userName); ?>'s Estimated Monthly Income: <span id="userIncomeDisplay"><?php echo htmlspecialchars($userIncome); ?></span></p>
+                <h1 class="text-5xl font-extrabold text-gray-900 text-center mb-4"><?php echo htmlspecialchars($userName); ?>, Your Expense Summary is Ready</h1>
+                <p class="text-center mb-4"><?php echo htmlspecialchars($userName); ?> this is based on your estimate Monthly Income of <span id="userIncomeDisplay"><?php echo htmlspecialchars($userIncome); ?></span></p>
                 <!-- Navigation Tabs -->
                 <div class="flex justify-center mb-8 hidden">
                     <div class="bg-white rounded-lg shadow-md p-1">
@@ -76,28 +76,28 @@
                         <div class="bg-violet-700 text-white p-6 rounded-xl shadow-2xl border-b-4 border-amber-500">
                             <p class="text-sm font-semibold opacity-80 uppercase">Total Spent (1 Month)</p>
                             <p class="text-4xl font-extrabold mt-1" id="statTotalSpent">$0.00</p>
-                            <p class="text-xs mt-2 opacity-70">Based on categorized debits.</p>
+                            <p class="text-xs mt-2 opacity-70">These are your Expenses we have identified.</p>
                         </div>
 
                         <!-- Stat Card 2: Total Income (Dynamic from Credits) -->
                         <div class="bg-white p-6 rounded-xl shadow-2xl border-b-4 border-violet-500">
                             <p class="text-sm font-semibold text-gray-500 uppercase">Total Income/Credit Analyzed</p>
                             <p class="text-4xl font-extrabold mt-1 text-violet-700" id="statMonthlyIncome">$0.00</p>
-                            <p class="text-xs mt-2 text-gray-500">From statement credits.</p>
+                            <p class="text-xs mt-2 text-gray-500">This is the money coming into your account.</p>
                         </div>
 
                         <!-- Stat Card 3: Share of Income Spent (Dynamic) -->
                         <div class="bg-white p-6 rounded-xl shadow-2xl border-b-4 border-red-500">
                             <p class="text-sm font-semibold text-gray-500 uppercase">Total Share of Income Spent</p>
                             <p class="text-4xl font-extrabold mt-1 text-red-600" id="statIncomeShare">0.00%</p>
-                            <p class="text-xs mt-2 text-gray-500">The crucial financial health metric.</p>
+                            <p class="text-xs mt-2 text-gray-500">This is the Percentage of your Income you have spent</p>
                         </div>
 
                         <!-- Stat Card 4: Discretionary Leaks Found (Dynamic) -->
                         <div class="bg-white p-6 rounded-xl shadow-2xl border-b-4 border-green-500">
                             <p class="text-sm font-semibold text-gray-500 uppercase">Identified Discretionary Leaks</p>
                             <p class="text-4xl font-extrabold mt-1 text-green-600" id="statLeaksFound">$0.00</p>
-                            <p class="text-xs mt-2 text-gray-500">Immediate, recoverable savings identified.</p>
+                            <p class="text-xs mt-2 text-gray-500">We identified this as immediate, recoverable savings identified.</p>
                         </div>
                     </div>
 
@@ -122,7 +122,7 @@
                     <!-- Back to History Button -->
                     <div class="mt-8 text-center">
                         <button id="backToHistory" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-md">
-                            ← Back to History
+                            ← View all your previous Expense analysis
                         </button>
                     </div>
                 </div>
@@ -130,15 +130,15 @@
                 <!-- Call to Action for Blueprint -->
                 <div id="blueprintCTA" class="mt-16 text-center bg-purple-50 p-8 rounded-xl shadow-2xl border-4 border-violet-700">
                     <h3 class="text-3xl font-bold text-violet-800 mb-4">Ready for the Action Plan?</h3>
-                    <p class="text-xl text-gray-700 mb-6">Your data is ready, but a basic summary won't save you money. Unlock the **Wealth Blueprint** for personalized, step-by-step instructions on eliminating those spending leaks.</p>
+                    <p class="text-xl text-gray-700 mb-6">We've shown you how you are spending. But what do you do next? <br /><br />Most people don't know what they should be doing to improve the situation. We'll show you within few seconds exactly what you need to do <strong>based on your spending habits we analysed</strong>. Simply Follow the Blueprint we will create for you, every Month.<br /><br />Go Ahead, Unlock the <strong>Wealth Blueprint</strong> for personalized, step-by-step instructions on eliminating those spending leaks, and building wealth.</p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <a href="#" id="unlockBlueprintBtn" class="flat-cta text-white py-3 px-8 rounded-lg font-bold text-lg uppercase shadow-xl">
-                            Unlock the $57 Blueprint Now
-                        </a>
+                            Unlock the Blueprint Now
+                      </a>
                         <button onclick="openUploadModal()" class="px-8 py-4 bg-green-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300">
                             Analyze Another PDF
                         </button>
-                    </div>
+                  </div>
                 </div>
             </div>
         </div>

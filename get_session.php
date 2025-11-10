@@ -11,7 +11,8 @@ $data = [
     'analysis_count' => 0,
     'additional_credits' => 0,
     'additional_credits_total' => 0,
-    'remaining_credits' => 0
+    'remaining_credits' => 0,
+    'last_analysis_date' => ''
 ];
 
 try {
@@ -22,6 +23,7 @@ try {
 
         if ($user) {
             $analysisCount = $userMgmt->getCompletedAnalysisCount($user['id']);
+            $lastAnalysisData = $userMgmt->getLatestAnalysis($user['id']);
             $additionalCredits = (int)($user['additional_credits'] ?? 0);
             $additionalCreditsTotal = (int)($user['additional_credits_total'] ?? 0);
 
@@ -35,12 +37,14 @@ try {
             $data['additional_credits'] = $additionalCredits;
             $data['additional_credits_total'] = $additionalCreditsTotal;
             $data['remaining_credits'] = $remaining;
+            $data['last_analysis_date'] = $lastAnalysisData['upload_date'];
 
             // add data at sessions
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_income'] = $user['income'];
+            $_SESSION['last_analysis_date'] = $lastAnalysisData['upload_date'];
             
             // Keep sessions updated
             $_SESSION['additional_credits'] = $additionalCredits;
