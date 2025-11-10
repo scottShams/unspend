@@ -5,6 +5,59 @@ use Smalot\PdfParser\Parser;
 // Load environment variables
 require_once __DIR__ . '/../config/env.php';
 
+// Use your existing OpenAI client or the library wrapper you already use.
+// Returns standard 3-letter currency code or 'UNKNOWN'
+function detectCurrencyWithAI(string $text) : string {
+    $apiKey = getApiKey(); // your helper
+    $client = OpenAI::client($apiKey);
+
+    // Keep prompt minimal and strict
+    $system = "You are a concise extractor. Return ONLY a single 3-letter ISO currency code (e.g. GBP, USD, EUR, AED, BDT) or UNKNOWN if you cannot determine it.";
+    $user = "Identify the currency used in this bank statement text. Return just the code (no explanation).\n\n" . substr($text, 0, 2000); // limit length
+
+    try {
+        $resp = $client->chat()->create([
+            'model' => 'gpt-4o-mini',
+            'messages' => [
+                ['role' => 'system', 'content' => $system],
+                ['role' => 'user', 'content' => $user]
+            ],
+            'temperature' => 0,
+            'max_tokens' => 10,
+        ]);
+
+        $code = trim($resp->choices[0]->message->content ?? '');
+        // cleanup: only uppercase letters
+        $code = strtoupper(preg_replace('/[^A-Z]/', '', $code));
+        if (strlen($code) === 3) return $code;
+    } catch (Exception $e) {
+        // log but continue to fallback
+        error_log("Currency AI detect failed: " . $e->getMessage());
+    }
+
+    return 'UNKNOWN';
+}
+
+function detectCurrencyFromText(string $text) : string {
+    $map = [
+        '/\£|GBP|pound/i' => 'GBP',
+        '/\$|USD|dollar/i' => 'USD',
+        '/€|EUR|euro/i' => 'EUR',
+        '/৳|BDT|taka/i' => 'BDT',
+        '/AED|dirham/i' => 'AED',
+        '/INR|₹|rupee/i' => 'INR',
+        '/SAR|riyals?/i' => 'SAR',
+        '/HKD|HK\$|Hong Kong/i' => 'HKD',
+        '/JPY|¥|yen/i' => 'JPY'
+    ];
+
+    foreach ($map as $regex => $code) {
+        if (preg_match($regex, $text)) return $code;
+    }
+    return 'UNKNOWN';
+}
+
+
 function parseBankStatement($filePath, $fileType) {
     $text = '';
 
@@ -13,7 +66,6 @@ function parseBankStatement($filePath, $fileType) {
         try {
             $pdf = $parser->parseFile($filePath);
             $text = $pdf->getText();
-            // file_put_contents('pdfparser_debug.txt', $text);
         } catch (Exception $e) {
             throw new Exception("Error extracting text: " . $e->getMessage());
         }
@@ -21,14 +73,28 @@ function parseBankStatement($filePath, $fileType) {
         $text = file_get_contents($filePath);
     }
 
-    // Validate if the text is from a valid bank statement
     if (!validateBankStatement($text)) {
         throw new Exception("The uploaded file does not appear to be a valid bank statement.");
     }
 
-    // return parseTransactions($text);
-    return parseTransactionsAIinChunks($text);
+    // first try fast regex-based detection
+    $currency = detectCurrencyFromText($text);
+
+    // if regex cannot decide, fallback to small AI detector (recommended)
+    if ($currency === 'UNKNOWN') {
+        $currency = detectCurrencyWithAI($text);
+    }
+
+    // parse transactions (unchanged)
+    $transactions = parseTransactionsAIinChunks($text);
+
+    // return both
+    return [
+        'currency' => $currency,
+        'transactions' => $transactions
+    ];
 }
+
 
 function parseTransactions($text) {
     $lines = explode("\n", $text);
@@ -327,12 +393,12 @@ function validateBankStatement($text) {
     return $keywordCount >= 2;
 }
 
-function prepareCSV($transactions) {
-    $rawStatement = "Date,Description,Debit,Credit,Balance\n"; // include balance
+function prepareCSV($transactions, $currency = '') {
+    $meta = $currency ? "# Currency: {$currency}\n" : "";
+    $rawStatement = $meta . "Date,Description,Debit,Credit,Balance\n";
     foreach ($transactions as $trans) {
-        // Handle missing fields gracefully
         $date = $trans['date'] ?? '';
-        $desc = str_replace(',', ' ', $trans['description'] ?? ''); // remove commas from desc
+        $desc = str_replace(',', ' ', $trans['description'] ?? '');
         $debit = $trans['debit'] ?? 0;
         $credit = $trans['credit'] ?? 0;
         $balance = $trans['balance'] ?? '';
@@ -341,5 +407,6 @@ function prepareCSV($transactions) {
     }
     return $rawStatement;
 }
+
 
 ?>

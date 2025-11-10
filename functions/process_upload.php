@@ -97,13 +97,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["bankStatementFile"]))
             } else {
                 // Proceed with parsing and analysis
                 // Parse the file
-                $transactions = parseBankStatement($target_file, $fileType);
-
-                // Prepare CSV
-                $rawStatement = prepareCSV($transactions);
+                $parsed  = parseBankStatement($target_file, $fileType);
+                $transactions = $parsed['transactions'];
+                $detectedCurrency = $parsed['currency'];
+                // Prepare CSV and include currency metadata
+                $rawStatement = prepareCSV($transactions, $detectedCurrency);
 
                 // API Call (now checks for existing analysis first)
-                $analysisData = callGeminiAPI($rawStatement, $pdo, $user['id'], $target_file);
+                $analysisData = callGeminiAPI($rawStatement, $pdo, $user['id'], $target_file, $detectedCurrency);
 
                 // Save to database with user ID
                 saveAnalysisToDatabase($pdo, $target_file, $user['id'], json_encode($analysisData));
