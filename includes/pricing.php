@@ -10,7 +10,12 @@
                 <!-- Plan 1: Monthly Subscription (Featured) -->
                 <div class="bg-purple-900 p-8 rounded-xl shadow-2xl transform scale-105 border-4 border-amber-400">
                     <h3 class="text-3xl font-bold mb-4 text-amber-400">Monthly Insights <span class="text-base font-normal block">(Subscription)</span></h3>
-                    <p class="text-5xl font-extrabold mb-6 text-white">$4.99/mo</p>
+                    <!-- Price Section -->
+                    <div class="mb-6">
+                        <span class="text-purple-300 line-through text-xl mr-2">$9.99</span> <!-- Old price -->
+                        <span class="text-5xl font-extrabold text-white">$4.99</span> <!-- Offer price -->
+                        <span class="text-white text-lg ml-1">/mo</span>
+                    </div>
                     <p class="text-purple-200 mb-8 font-medium">Continuous, up-to-date analysis to ensure your spending habits stay optimized month after month.</p>
                     <ul class="text-left space-y-3 text-white mb-8">
                         <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Unlimited Monthly Analyses</li>
@@ -25,7 +30,12 @@
                 <!-- Plan 2: Annual Subscription -->
                 <div class="bg-white p-8 rounded-xl shadow-2xl border-4 border-yellow-400">
                     <h3 class="text-3xl font-bold mb-4 text-yellow-600">Annual Clarity <span class="text-base font-normal block">(Subscription)</span></h3>
-                    <p class="text-5xl font-extrabold mb-6">$49.99/yr</p>
+                    <div class="mb-6">
+                        <span class="text-gray-400 line-through text-xl mr-2">$69.99</span> <!-- Old price -->
+                        <span class="text-yellow-600 text-5xl font-extrabold">$49.99</span> <!-- Offer price -->
+                        <span class="text-gray-700 text-lg ml-1">/yr</span>
+                    </div>
+
                     <p class="text-gray-600 mb-8 font-medium">Commit to a year of financial mastery and save big—get two months free!</p>
                     <ul class="text-left space-y-3 text-gray-700 mb-8">
                         <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Unlimited Analyses</li>
