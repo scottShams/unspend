@@ -143,7 +143,6 @@ document.querySelectorAll('.cta-trigger').forEach(button => {
         const hasUserData = checkUserDataCookies();
         
         if (window.userHasAccount || hasUserData) {
-            alert('You already have an account!');
             // Existing user - go directly to upload modal
             openModal('uploadModal');
         } else {
