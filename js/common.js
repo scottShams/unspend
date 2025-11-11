@@ -143,7 +143,6 @@ document.querySelectorAll('.cta-trigger').forEach(button => {
         setTimeout(() => {
             const hasUserData = checkUserDataCookies();
             console.log('hasUserData:', hasUserData);
-            console.log('Cookies:', document.cookie);
 
             if (window.userHasAccount || hasUserData) {
                 openModal('uploadModal');
