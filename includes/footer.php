@@ -181,8 +181,6 @@
         if (nameField && userData.name) nameField.value = userData.name;
         if (emailField && userData.email) emailField.value = userData.email;
         if (incomeField && userData.income) incomeField.value = userData.income;
-        
-        console.log('Pre-populated form with cookie data:', userData);
     }
 
     // Contact Form Handler - Use the shared logic from common.js if available
