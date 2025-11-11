@@ -52,120 +52,90 @@ function initializeUserDataFromCookies() {
 // Modal Control Functions
 let modalInProgress = false; // Prevent overlapping calls
 
-window.openModal = function (id) {
-    if (modalInProgress) return; // stop double openings
+window.openModal = function(id) {
+    if (modalInProgress) return;
     const modal = document.getElementById(id);
     if (!modal) return;
 
-    // Close all other modals first
-    document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+    // Close all **other** modals
+    document.querySelectorAll('.modal').forEach(m => {
+        if (m.id !== id) m.classList.add('hidden');
+    });
     document.body.style.overflow = 'hidden';
 
-    // If it's the contact modal, open immediately
-    if (id === 'contactModal') {
-        modal.classList.remove('hidden');
-        return;
-    }
-
-    // Only run session/credit check for upload modal
     if (id === 'uploadModal') {
-        modalInProgress = true; // lock while checking
+        modalInProgress = true;
         fetch('get_session.php')
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 const analysisCount = parseInt(data.analysis_count) || 0;
                 const additionalCredits = parseInt(data.additional_credits) || 0;
                 const totalPurchased = parseInt(data.additional_credits_total) || 0;
 
-                const formattedDate = data.last_analysis_date
-                    ? new Date(data.last_analysis_date).toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: '2-digit'
-                      })
-                    : '';
-
-                // Case 1: Used all 3 free credits
                 if (analysisCount >= 3 && totalPurchased === 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Analysis Limit Reached',
-                        text: `Hi ${data.name}! You've used your 3 free analyses. You last analysed on ${formattedDate}.\n\nGet more credits below.`,
+                        text: `Hi ${data.name}! You've used your 3 free analyses.`,
                         confirmButtonText: 'Upgrade Now',
                         showCancelButton: true,
                         cancelButtonText: 'Maybe Later'
                     }).then(result => {
-                        if (result.isConfirmed) {
-                            window.location.href = 'pricing.php';
-                        } else {
-                            location.reload();
-                        }
+                        if (result.isConfirmed) window.location.href = 'pricing.php';
+                        else location.reload();
                     });
                     return;
                 }
 
-                // Case 2: Purchased credits exhausted
                 if (analysisCount >= 3 && totalPurchased > 0 && additionalCredits <= 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Credits Exhausted',
-                        text: `${data.name}! You've used all purchased credits.\n\nPlease buy more to continue.`,
+                        text: `You've used all purchased credits.`,
                         confirmButtonText: 'Buy More',
                         showCancelButton: true,
                         cancelButtonText: 'Maybe Later'
                     }).then(result => {
-                        if (result.isConfirmed) {
-                            window.location.href = 'pricing.php';
-                        } else {
-                            location.reload();
-                        }
+                        if (result.isConfirmed) window.location.href = 'pricing.php';
+                        else location.reload();
                     });
                     return;
                 }
 
-                // Has valid credits → open upload modal
+                // User has credits → open modal
                 modal.classList.remove('hidden');
             })
             .catch(err => {
-                console.error('Session check failed:', err);
+                console.error(err);
                 Swal.fire({
                     icon: 'error',
                     title: 'Connection Error',
-                    text: 'Could not verify credits right now. Try again soon.'
+                    text: 'Could not verify credits right now.'
                 });
             })
-            .finally(() => {
-                modalInProgress = false; // unlock
-            });
+            .finally(() => modalInProgress = false);
     } else {
+        // Just show any other modal
         modal.classList.remove('hidden');
     }
 };
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.cta-trigger').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
+document.querySelectorAll('.cta-trigger').forEach(button => {
+    button.addEventListener('click', e => {
+        e.preventDefault();
 
-            // Close any open modals first
-            document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
-            document.body.style.overflow = '';
+        const hasUserData = checkUserDataCookies();
+        const hasAccount = !!window.userHasAccount;
 
-            // Read cookie data immediately (mobile-safe)
-            const hasUserData = checkUserDataCookies();
-
-            // Determine modal to open
-            if (window.userHasAccount || hasUserData) {
-                openModal('uploadModal');
-            } else {
-                openModal('contactModal');
-            }
-        });
+        if (hasAccount || hasUserData) {
+            openModal('uploadModal');
+        } else {
+            openModal('contactModal');
+        }
     });
 });
+
 
 
 window.closeModal = function(id) {
