@@ -16,7 +16,7 @@
  				<!-- Primary CTA -->
                 <div id="cta">
                     <a href="#" class="flat-cta text-lg sm:text-xl md:text-2xl lg:text-3xl text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-xl font-bold uppercase shadow-2xl tracking-wider cta-trigger block text-center" data-user-has-account="<?php echo $userHasAccount ? 'true' : 'false'; ?>">
-                        <?php echo $userHasAccount ? 'Upload Another Statement' : 'Start Your 3 Months FREE Analysis Now!'; ?>
+                        <?php echo $userHasAccount ? 'Upload Another Statement' : 'Start Your 3 Months FREE Analysis Now!!'; ?>
                     </a>
                     <p class="mt-4 text-sm text-gray-500">
                         <?php echo $userHasAccount ? 'Analyze additional bank statements for deeper insights.' : 'No credit card required for your first 90 days of clarity.'; ?>

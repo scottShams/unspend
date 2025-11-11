@@ -138,7 +138,7 @@ window.openModal = function (id) {
 document.querySelectorAll('.cta-trigger').forEach(button => {
     button.addEventListener('click', (e) => {
         e.preventDefault();
-
+        console.log('CTA clicked!');
         // Re-initialize cookies on click in case they were just set
         const hasUserData = checkUserDataCookies();
         
