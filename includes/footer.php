@@ -52,7 +52,12 @@
                     </button>
                 </div>
 
-                <p class="text-gray-300 mb-6">&lt;FNAME, Select a file below to begin the analysis. Our AI will securely process the content to categorize and summarize your spending.</p>
+                <p class="text-gray-300 mb-6">
+                    <?php 
+                        $userName = $_COOKIE['user_name'] ?? ($_SESSION['user_name'] ?? $_SESSION['temp_name'] ?? '');
+                        echo htmlspecialchars($userName ? $userName . ',' : '');
+                    ?> 
+                    Select a file below to begin the analysis. Our AI will securely process the content to categorize and summarize your spending.</p>
 
                 <div class="bg-gray-700 p-5 rounded-lg space-y-4">
                     <div class="flex items-start">
