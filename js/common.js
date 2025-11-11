@@ -34,6 +34,27 @@ function getUserDataFromCookies() {
     };
 }
 
+// Initialize user data from cookies on page load
+function initializeUserDataFromCookies() {
+    // Check if we have cookie data
+    if (checkUserDataCookies()) {
+        const userData = getUserDataFromCookies();
+        console.log('Found user data in cookies:', userData);
+        
+        // Pre-populate form fields if they exist
+        const nameField = document.getElementById('modal-name');
+        const emailField = document.getElementById('modal-email');
+        const incomeField = document.getElementById('modal-income');
+        
+        if (nameField) nameField.value = userData.name;
+        if (emailField) emailField.value = userData.email;
+        if (incomeField) incomeField.value = userData.income;
+        
+        return true;
+    }
+    return false;
+}
+
 // Modal Control Functions
 window.openModal = function (id) {
     if (id === 'uploadModal' || id === 'contactModal') {
@@ -121,7 +142,10 @@ document.querySelectorAll('.cta-trigger').forEach(button => {
     button.addEventListener('click', (e) => {
         e.preventDefault();
 
-        if (window.userHasAccount || checkUserDataCookies()) {
+        // Re-initialize cookies on click in case they were just set
+        const hasUserData = checkUserDataCookies();
+        
+        if (window.userHasAccount || hasUserData) {
             // Existing user - go directly to upload modal
             openModal('uploadModal');
         } else {
@@ -131,27 +155,6 @@ document.querySelectorAll('.cta-trigger').forEach(button => {
     });
 });
 
-// --- Form Submission (Step 1 -> Step 2) ---
-if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const email = document.getElementById('modal-email').value;
-        const name = document.getElementById('modal-name').value;
-        const income = document.getElementById('modal-income').value;
-
-        // Store in session for login page
-        fetch('store_session.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, name, income })
-        }).then(() => {
-            // Close Step 1, Open Step 2
-            closeModal('contactModal');
-            openModal('uploadModal');
-        });
-    });
-}
 
 window.closeModal = function(id) {
     document.getElementById(id).classList.add('hidden');
@@ -189,6 +192,16 @@ window.openUploadModal = function() {
         openModal('contactModal');
     }
 };
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, checking for cookie data...');
+    
+    // Initialize user data from cookies
+    initializeUserDataFromCookies();
+    
+    // Also initialize file upload functionality
+    initializeFileUpload();
+});
 
 // File Upload Logic (shared between pages)
 function initializeFileUpload() {

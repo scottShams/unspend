@@ -10,6 +10,7 @@ require_once 'functions/user_management.php';
 $userHasAccount = false;
 $userName = '';
 $userEmail = '';
+$userIncome = '';
 
 if (isset($_SESSION['user_id'])) {
     $db = Database::getInstance();
@@ -20,6 +21,36 @@ if (isset($_SESSION['user_id'])) {
         $userHasAccount = true;
         $userName = $user['name'];
         $userEmail = $user['email'];
+        $userIncome = $user['income'] ?? '';
+        
+        // Set cookies for user data (expires in 15 days)
+        if (!empty($user['name'])) {
+            setcookie('user_name', $user['name'], time() + 15*24*60*60, "/");
+        }
+        if (!empty($user['email'])) {
+            setcookie('user_email', $user['email'], time() + 15*24*60*60, "/");
+        }
+        if (!empty($user['income'])) {
+            setcookie('user_income', $user['income'], time() + 15*24*60*60, "/");
+        }
+    }
+}
+
+// Check for temporary user data in session (from previous form submission)
+if (!$userHasAccount && isset($_SESSION['temp_name'], $_SESSION['temp_email'], $_SESSION['temp_income'])) {
+    $userName = $_SESSION['temp_name'];
+    $userEmail = $_SESSION['temp_email'];
+    $userIncome = $_SESSION['temp_income'];
+    
+    // Set cookies for temporary user data (expires in 15 days)
+    if (!empty($_SESSION['temp_name'])) {
+        setcookie('user_name', $_SESSION['temp_name'], time() + 15*24*60*60, "/");
+    }
+    if (!empty($_SESSION['temp_email'])) {
+        setcookie('user_email', $_SESSION['temp_email'], time() + 15*24*60*60, "/");
+    }
+    if (!empty($_SESSION['temp_income'])) {
+        setcookie('user_income', $_SESSION['temp_income'], time() + 15*24*60*60, "/");
     }
 }
 

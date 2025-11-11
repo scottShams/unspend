@@ -171,7 +171,21 @@
     // Make userHasAccount available to JavaScript
     window.userHasAccount = <?php echo $userHasAccount ? 'true' : 'false'; ?>;
 
-    // Contact Form Handler
+    // Initialize user data from cookies on page load
+    if (window.userHasAccount || (typeof checkUserDataCookies === 'function' && checkUserDataCookies())) {
+        const userData = (typeof getUserDataFromCookies === 'function') ? getUserDataFromCookies() : {};
+        const nameField = document.getElementById('modal-name');
+        const emailField = document.getElementById('modal-email');
+        const incomeField = document.getElementById('modal-income');
+        
+        if (nameField && userData.name) nameField.value = userData.name;
+        if (emailField && userData.email) emailField.value = userData.email;
+        if (incomeField && userData.income) incomeField.value = userData.income;
+        
+        console.log('Pre-populated form with cookie data:', userData);
+    }
+
+    // Contact Form Handler - Use the shared logic from common.js if available
     document.addEventListener('DOMContentLoaded', function() {
         const contactForm = document.getElementById('contactForm');
         if (contactForm) {
@@ -183,18 +197,29 @@
                 const income = document.getElementById('modal-income')?.value;
                 
                 if (name && email && income) {
-                    // Save user data to cookies (expires in 15 days)
-                    setCookie('user_name', name, 15);
-                    setCookie('user_email', email, 15);
-                    setCookie('user_income', income, 15);
+                    // Use the setCookie function from common.js if available
+                    if (typeof setCookie === 'function') {
+                        setCookie('user_name', name, 15);
+                        setCookie('user_email', email, 15);
+                        setCookie('user_income', income, 15);
+                    } else {
+                        // Fallback: set cookies directly
+                        const expires = new Date();
+                        expires.setTime(expires.getTime() + (15 * 24 * 60 * 60 * 1000));
+                        document.cookie = `user_name=${name};expires=${expires.toUTCString()};path=/`;
+                        document.cookie = `user_email=${email};expires=${expires.toUTCString()};path=/`;
+                        document.cookie = `user_income=${income};expires=${expires.toUTCString()};path=/`;
+                    }
                     
                     // Close contact modal and open upload modal
-                    closeModal('contactModal');
-                    
-                    // Small delay to ensure contact modal is fully closed
-                    setTimeout(() => {
-                        openModal('uploadModal');
-                    }, 100);
+                    if (typeof closeModal === 'function') {
+                        closeModal('contactModal');
+                        setTimeout(() => {
+                            if (typeof openModal === 'function') {
+                                openModal('uploadModal');
+                            }
+                        }, 100);
+                    }
                 }
             });
         }
