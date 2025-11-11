@@ -134,21 +134,23 @@ window.openModal = function (id) {
     }
 };
 
-// --- CTA Trigger Logic ---
 document.querySelectorAll('.cta-trigger').forEach(button => {
     button.addEventListener('click', (e) => {
         e.preventDefault();
         console.log('CTA clicked!');
-        // Re-initialize cookies on click in case they were just set
-        const hasUserData = checkUserDataCookies();
         
-        if (window.userHasAccount || hasUserData) {
-            // Existing user - go directly to upload modal
-            openModal('uploadModal');
-        } else {
-            // New user - start with contact modal
-            openModal('contactModal');
-        }
+        // Slight delay to ensure fresh cookie reads (helps on mobile)
+        setTimeout(() => {
+            const hasUserData = checkUserDataCookies();
+            console.log('hasUserData:', hasUserData);
+            console.log('Cookies:', document.cookie);
+
+            if (window.userHasAccount || hasUserData) {
+                openModal('uploadModal');
+            } else {
+                openModal('contactModal');
+            }
+        }, 150);
     });
 });
 
