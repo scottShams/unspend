@@ -50,84 +50,100 @@ function initializeUserDataFromCookies() {
 }
 
 // Modal Control Functions
+let modalInProgress = false; // Prevent overlapping calls
+
 window.openModal = function (id) {
-    if (id === 'uploadModal' || id === 'contactModal') {
+    if (modalInProgress) return; // stop double openings
+    const modal = document.getElementById(id);
+    if (!modal) return;
+
+    // Close all other modals first
+    document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+    document.body.style.overflow = 'hidden';
+
+    // If it's the contact modal, open immediately
+    if (id === 'contactModal') {
+        modal.classList.remove('hidden');
+        return;
+    }
+
+    // Only run session/credit check for upload modal
+    if (id === 'uploadModal') {
+        modalInProgress = true; // lock while checking
         fetch('get_session.php')
             .then(response => response.json())
             .then(data => {
                 const analysisCount = parseInt(data.analysis_count) || 0;
                 const additionalCredits = parseInt(data.additional_credits) || 0;
                 const totalPurchased = parseInt(data.additional_credits_total) || 0;
-                const remainingCredits = parseInt(data.remaining_credits) || 0;
 
-                // Convert your date string to a JS Date object
-                const rawDate = data.last_analysis_date; // "2025-11-07 16:28:18"
-                const dateObj = new Date(rawDate);
+                const formattedDate = data.last_analysis_date
+                    ? new Date(data.last_analysis_date).toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit'
+                      })
+                    : '';
 
-                // Options for formatting
-                const options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
-
-                // Format the date
-                const formattedDate = dateObj.toLocaleString('en-US', options);
-
-                //Case 1: Used all 3 free credits, never bought any
+                // Case 1: Used all 3 free credits
                 if (analysisCount >= 3 && totalPurchased === 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Analysis Limit Reached',
-                        text: `Hi ${data.name}! You've used your 3 free analyses. You last Analysed your Spending on ${formattedDate}.\n\nYou can get more Credits by clicking the Upgrade Now Button`,
+                        text: `Hi ${data.name}! You've used your 3 free analyses. You last analysed on ${formattedDate}.\n\nGet more credits below.`,
                         confirmButtonText: 'Upgrade Now',
                         showCancelButton: true,
                         cancelButtonText: 'Maybe Later'
                     }).then(result => {
                         if (result.isConfirmed) {
                             window.location.href = 'pricing.php';
-                        } else if (result.isDismissed) {
-                            // Reload the existing page
+                        } else {
                             location.reload();
                         }
                     });
                     return;
                 }
 
-                // Case 2: User had purchased credits but used them all
+                // Case 2: Purchased credits exhausted
                 if (analysisCount >= 3 && totalPurchased > 0 && additionalCredits <= 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Credits Exhausted',
-                        text: `${data.name}! You've used all your purchased credits. You last Analysed your Spending on ${formattedDate}.\n\nPlease buy more to continue analyzing.`,
-                        confirmButtonText: 'Buy More Credits',
+                        text: `${data.name}! You've used all purchased credits.\n\nPlease buy more to continue.`,
+                        confirmButtonText: 'Buy More',
                         showCancelButton: true,
                         cancelButtonText: 'Maybe Later'
                     }).then(result => {
                         if (result.isConfirmed) {
                             window.location.href = 'pricing.php';
-                        } else if (result.isDismissed) {
-                            // Reload the existing page
+                        } else {
                             location.reload();
                         }
                     });
                     return;
                 }
 
-                // Case 3: Still has free or purchased credits
-                document.getElementById(id).classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
+                // Has valid credits → open upload modal
+                modal.classList.remove('hidden');
             })
-            .catch(error => {
-                console.error('Error checking analysis limit:', error);
+            .catch(err => {
+                console.error('Session check failed:', err);
                 Swal.fire({
                     icon: 'error',
                     title: 'Connection Error',
-                    text: 'We couldn`t check your credits right now. Please try again shortly.'
+                    text: 'Could not verify credits right now. Try again soon.'
                 });
+            })
+            .finally(() => {
+                modalInProgress = false; // unlock
             });
     } else {
-        // Open any other modal normally
-        document.getElementById(id).classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
+        modal.classList.remove('hidden');
     }
 };
+
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.cta-trigger').forEach(button => {
