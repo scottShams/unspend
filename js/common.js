@@ -116,7 +116,42 @@ window.openModal = function (id) {
     }
 };
 
+// --- CTA Trigger Logic ---
+document.querySelectorAll('.cta-trigger').forEach(button => {
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
 
+        if (window.userHasAccount || checkUserDataCookies()) {
+            // Existing user - go directly to upload modal
+            openModal('uploadModal');
+        } else {
+            // New user - start with contact modal
+            openModal('contactModal');
+        }
+    });
+});
+
+// --- Form Submission (Step 1 -> Step 2) ---
+if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('modal-email').value;
+        const name = document.getElementById('modal-name').value;
+        const income = document.getElementById('modal-income').value;
+
+        // Store in session for login page
+        fetch('store_session.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, name, income })
+        }).then(() => {
+            // Close Step 1, Open Step 2
+            closeModal('contactModal');
+            openModal('uploadModal');
+        });
+    });
+}
 
 window.closeModal = function(id) {
     document.getElementById(id).classList.add('hidden');
