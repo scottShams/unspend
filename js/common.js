@@ -8,13 +8,9 @@ function setCookie(name, value, days) {
 }
 
 function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
     return null;
 }
 
@@ -22,8 +18,7 @@ function checkUserDataCookies() {
     const name = getCookie('user_name');
     const email = getCookie('user_email');
     const income = getCookie('user_income');
-    
-    return name && email && income;
+    return !!(name && email && income);
 }
 
 function getUserDataFromCookies() {
@@ -134,22 +129,25 @@ window.openModal = function (id) {
     }
 };
 
-document.querySelectorAll('.cta-trigger').forEach(button => {
-    button.addEventListener('click', (e) => {
-        e.preventDefault();
-        console.log('CTA clicked!');
-        
-        // Slight delay to ensure fresh cookie reads (helps on mobile)
-        setTimeout(() => {
-            const hasUserData = checkUserDataCookies();
-            console.log('hasUserData:', hasUserData);
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.cta-trigger').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
 
+            // Close any open modals first
+            document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+            document.body.style.overflow = '';
+
+            // Read cookie data immediately (mobile-safe)
+            const hasUserData = checkUserDataCookies();
+
+            // Determine modal to open
             if (window.userHasAccount || hasUserData) {
                 openModal('uploadModal');
             } else {
                 openModal('contactModal');
             }
-        }, 150);
+        });
     });
 });
 
