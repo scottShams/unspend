@@ -39,7 +39,6 @@ function initializeUserDataFromCookies() {
     // Check if we have cookie data
     if (checkUserDataCookies()) {
         const userData = getUserDataFromCookies();
-        console.log('Found user data in cookies:', userData);
         
         // Pre-populate form fields if they exist
         const nameField = document.getElementById('modal-name');
@@ -61,8 +60,6 @@ window.openModal = function (id) {
         fetch('get_session.php')
             .then(response => response.json())
             .then(data => {
-                console.log('Session data:', data);
-
                 const analysisCount = parseInt(data.analysis_count) || 0;
                 const additionalCredits = parseInt(data.additional_credits) || 0;
                 const totalPurchased = parseInt(data.additional_credits_total) || 0;
@@ -146,6 +143,7 @@ document.querySelectorAll('.cta-trigger').forEach(button => {
         const hasUserData = checkUserDataCookies();
         
         if (window.userHasAccount || hasUserData) {
+            alert('You already have an account!');
             // Existing user - go directly to upload modal
             openModal('uploadModal');
         } else {
@@ -194,8 +192,6 @@ window.openUploadModal = function() {
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Page loaded, checking for cookie data...');
-    
     // Initialize user data from cookies
     initializeUserDataFromCookies();
     
