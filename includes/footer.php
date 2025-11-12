@@ -1,7 +1,7 @@
 <!-- --- MODAL STEP 1: CONTACT INFO --- -->
 <div id="contactModal" class="hidden fixed inset-0 z-[99] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeModal('contactModal')"></div>
+        <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
         <div class="inline-block align-middle bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border-t-8 border-violet-700">
             <div class="bg-white p-8">
                 <div class="flex justify-between items-start mb-4">
@@ -42,7 +42,7 @@
 <!-- --- MODAL STEP 2: UPLOAD INSTRUCTIONS AND AI ANALYSIS --- -->
 <div id="uploadModal" class="hidden fixed inset-0 z-[99] overflow-y-auto" aria-labelledby="modal-title-upload" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeModal('uploadModal')"></div>
+        <div class="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
         <div class="inline-block align-middle bg-gray-800 rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border-t-8 border-amber-500">
             <div class="p-8">
                 <div class="flex justify-between items-start mb-4">
