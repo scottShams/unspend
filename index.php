@@ -1,75 +1,58 @@
 <?php
-
-// Landing/Home Page
 session_start();
 require 'vendor/autoload.php';
 require 'config/database.php';
 require_once 'functions/user_management.php';
 
-// Check if user is logged in and has account
+$db = Database::getInstance();
+$userManager = new UserManagement($db->getConnection());
+
 $userHasAccount = false;
-$userName = '';
-$userEmail = '';
-$userIncome = '';
+$userName = $userEmail = $userIncome = '';
 
-if (isset($_SESSION['user_id'])) {
-    $db = Database::getInstance();
-    $userManager = new UserManagement($db->getConnection());
+// --- Check existing user (by cookie or session)
+if (!empty($_COOKIE['user_email'])) {
+    $user = $userManager->getUserByEmail($_COOKIE['user_email']);
+} elseif (!empty($_SESSION['user_id'])) {
     $user = $userManager->getUserById($_SESSION['user_id']);
+} else {
+    $user = null;
+}
 
-    if ($user) {
-        $userHasAccount = true;
-        $userName = $user['name'];
-        $userEmail = $user['email'];
-        $userIncome = $user['income'] ?? '';
-        
-        // Set cookies for user data (expires in 15 days)
-        if (!empty($user['name'])) {
-            setcookie('user_name', $user['name'], time() + 15*24*60*60, "/");
-        }
-        if (!empty($user['email'])) {
-            setcookie('user_email', $user['email'], time() + 15*24*60*60, "/");
-        }
-        if (!empty($user['income'])) {
-            setcookie('user_income', $user['income'], time() + 15*24*60*60, "/");
-        }
+if ($user) {
+    $userHasAccount = true;
+    [$userName, $userEmail, $userIncome] = [$user['name'], $user['email'], $user['income'] ?? ''];
+
+    $analysisCount = $userManager->getCompletedAnalysisCount($user['id']);
+    $additionalCredits = (int)($user['additional_credits'] ?? 0);
+    $additionalCreditsTotal = (int)($user['additional_credits_total'] ?? 0);
+    $freeLimit = 3;
+    $remaining = max(0, ($freeLimit - $analysisCount) + $additionalCredits);
+
+    // Set persistent cookies
+    foreach (['name' => $userName, 'email' => $userEmail, 'income' => $userIncome] as $key => $val) {
+        if (!empty($val)) setcookie("user_$key", $val, time() + 15*24*60*60, '/');
+    }
+}
+// --- If not found, fallback to temporary session data
+elseif (isset($_SESSION['temp_name'], $_SESSION['temp_email'], $_SESSION['temp_income'])) {
+    [$userName, $userEmail, $userIncome] = [$_SESSION['temp_name'], $_SESSION['temp_email'], $_SESSION['temp_income']];
+
+    foreach (['name' => $userName, 'email' => $userEmail, 'income' => $userIncome] as $key => $val) {
+        if (!empty($val)) setcookie("user_$key", $val, time() + 15*24*60*60, '/');
     }
 }
 
-// Check for temporary user data in session (from previous form submission)
-if (!$userHasAccount && isset($_SESSION['temp_name'], $_SESSION['temp_email'], $_SESSION['temp_income'])) {
-    $userName = $_SESSION['temp_name'];
-    $userEmail = $_SESSION['temp_email'];
-    $userIncome = $_SESSION['temp_income'];
-    
-    // Set cookies for temporary user data (expires in 15 days)
-    if (!empty($_SESSION['temp_name'])) {
-        setcookie('user_name', $_SESSION['temp_name'], time() + 15*24*60*60, "/");
-    }
-    if (!empty($_SESSION['temp_email'])) {
-        setcookie('user_email', $_SESSION['temp_email'], time() + 15*24*60*60, "/");
-    }
-    if (!empty($_SESSION['temp_income'])) {
-        setcookie('user_income', $_SESSION['temp_income'], time() + 15*24*60*60, "/");
-    }
-}
-
-// Check for referral parameter in URL
-$refToken = $_GET['ref'] ?? '';
-if (!empty($refToken)) {
-    $db = Database::getInstance();
-    $userManager = new UserManagement($db->getConnection());
-
-    // Find the referrer
+// --- Handle referral tracking
+if (!empty($_GET['ref'])) {
+    $refToken = $_GET['ref'];
     $referrer = $userManager->getUserByReferralToken($refToken);
 
     if ($referrer) {
-        // Store referrer info in session for later use during registration
         $_SESSION['referrer_id'] = $referrer['id'];
         $_SESSION['referrer_token'] = $refToken;
 
-        // Track the click if not already tracked in this session
-        if (!isset($_SESSION['referral_tracked'])) {
+        if (empty($_SESSION['referral_tracked'])) {
             $userManager->trackReferralClick(
                 $referrer['id'],
                 $_SERVER['REMOTE_ADDR'] ?? null,
@@ -81,13 +64,9 @@ if (!empty($refToken)) {
     }
 }
 
-// Page-specific variables
+// --- Render page
 $pageTitle = 'unSpend | Elite Financial Analysis';
-$content = '';
 ob_start();
 include 'includes/landing_page.php';
 $content = ob_get_clean();
-
-// Include the common layout
 include 'layouts/app.php';
-?>

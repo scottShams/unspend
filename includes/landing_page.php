@@ -4,26 +4,60 @@
         <!-- Hero Section -->
         <section class="py-16 md:py-24 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-
-                <!-- FOMO Headline -->
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
-                    STOP Overspending. Analyse your Expense <br />and Start Growing Wealth.
-                </h1>
-
+                <?php if (isset($user)): ?>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
+                        Welcome back <?= htmlspecialchars($user['name']) ?> <br>
+                        You have analysed <?= (int)$analysisCount ?> bank statements last time you were here.<br>
+                        You have <?= (int)$remaining ?> credits available.
+                    </h1>
+                <?php else: ?>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
+                        STOP Overspending. Analyse your Expense <br>and Start Growing Wealth.
+                    </h1>
+                <?php endif; ?>
 				<br />
                 <br />
 
  				<!-- Primary CTA -->
                 <div id="cta">
-                    <a href="#" class="flat-cta text-lg sm:text-xl md:text-2xl lg:text-3xl text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-xl font-bold uppercase shadow-2xl tracking-wider cta-trigger block text-center" data-user-has-account="<?php echo $userHasAccount ? 'true' : 'false'; ?>">
-                        <?php echo $userHasAccount ? 'Upload Another Statement' : 'Start Your 3 Months FREE Analysis Now!!'; ?>
+                    <?php
+                    // Determine button label, link, and optional message
+                    if ($userHasAccount) {
+                        if (isset($remaining) && $remaining <= 0) {
+                            // No credits left
+                            $ctaText = 'Buy Credit $1.99';
+                            $ctaLink = 'pricing.php';
+                            $ctaClass = '';
+                            $ctaMessage = 'You’ve used all your credits. Get more to continue analyzing statements.';
+                        } else {
+                            // Credits available
+                            $ctaText = 'Upload Another Statement';
+                            $ctaLink = '#'; // keep existing modal or upload link
+                            $ctaClass = 'cta-trigger';
+                            $ctaMessage = 'Go ahead and analyse another bank statement by clicking the big button below.';
+                        }
+                    } else {
+                        // New user
+                        $ctaText = 'Start Your 3 Months FREE Analysis Now!!';
+                        $ctaLink = '#'; // signup or upload modal
+                        $ctaClass = 'cta-trigger';
+                        $ctaMessage = 'No credit card required for your first 90 days of clarity.';
+                    }
+                    ?>
+
+                    <!-- Main CTA Button -->
+                    <a href="<?= htmlspecialchars($ctaLink) ?>"
+                    class="flat-cta text-lg sm:text-xl md:text-2xl lg:text-3xl text-white px-6 sm:px-8 md:px-10 py-3 sm:py-4 rounded-xl font-bold uppercase shadow-2xl tracking-wider <?= htmlspecialchars($ctaClass) ?> block text-center"
+                    data-user-has-account="<?= $userHasAccount ? 'true' : 'false'; ?>">
+                    <?= htmlspecialchars($ctaText) ?>
                     </a>
+
+                    <!-- Message under button -->
                     <p class="mt-4 text-sm text-gray-500">
-                        <?php echo $userHasAccount ? 'Analyze additional bank statements for deeper insights.' : 'No credit card required for your first 90 days of clarity.'; ?>
-                        
-                       
+                        <?= htmlspecialchars($ctaMessage) ?>
                     </p>
                 </div>
+
                 
                 <!-- Key Highlights & Benefits -->
                 <div class="mb-10 flex flex-wrap justify-center gap-4 sm:gap-8 max-w-4xl mx-auto">
@@ -183,7 +217,7 @@
                     <div class="bg-white p-8 rounded-xl shadow-2xl border-4 border-yellow-400">
                         <h3 class="text-3xl font-bold mb-4 text-yellow-600">Annual Clarity </h3>
                         <p class="text-5xl font-extrabold mb-6">
-                       <p class="text-5xl font-extrabold mb-6 text-white"><span class="text-base font-normal block">$19.99/12 credit</span>$49.99</p>
+                       <p class="text-5xl font-extrabold mb-6 text-dark"><span class="text-base font-normal block">$19.99/12 credit</span>$49.99</p>
                         <p class="text-gray-600 mb-8 font-medium">Commit to a year of financial mastery and save big—get two months free!</p>
                         <ul class="text-left space-y-3 text-gray-700 mb-8">
                             <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Unlimited Analyses</li>
