@@ -57,7 +57,7 @@ ob_start();
 
 <main class="py-16 md:py-32 bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md">
-        <div="bg-white p-8 sm:p-10 rounded-xl shadow-2xl border-t-8 border-violet-700">
+        <div class="bg-white p-8 sm:p-10 rounded-xl shadow-2xl border-t-8 border-violet-700">
             <div class="text-center">
                 <?php if ($messageType === 'success'): ?>
                     <div class="mb-6">
@@ -67,7 +67,19 @@ ob_start();
                     </div>
                     <h2 class="text-2xl font-bold text-gray-900 mb-4">Email Verified!</h2>
                     <p class="text-green-600 mb-4"><?php echo htmlspecialchars($message); ?></p>
-                    <p class="text-sm text-gray-500">Redirecting to your dashboard...</p>
+                    <p class="text-sm text-gray-500 mb-6">Redirecting...</p>
+                    
+                    <!-- Preloader -->
+                    <div class="flex justify-center items-center">
+                        <div class="relative">
+                            <div class="w-16 h-16 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin"></div>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg class="w-6 h-6 text-violet-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
                 <?php else: ?>
                     <div class="mb-6">
                         <svg class="mx-auto h-16 w-16 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,3 +103,14 @@ $content = ob_get_clean();
 // Include the common layout
 include 'layouts/app.php';
 ?>
+
+<?php if ($messageType === 'success'): ?>
+<style>
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+</style>
+<?php endif; ?>
