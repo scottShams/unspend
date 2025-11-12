@@ -27,26 +27,26 @@
                     <?php if (!empty($userHistory)): ?>
                         <div class="space-y-4">
                             <?php foreach ($userHistory as $index => $analysis): ?>
-                            <div class="bg-gray-50 p-6 rounded-lg shadow-sm border-l-4 <?php echo $index === 0 ? 'border-green-500' : 'border-gray-300'; ?>">
-                                <div class="flex justify-between items-center">
+                            <div class="bg-gray-50 p-4 sm:p-6 rounded-lg shadow-sm border-l-4 <?php echo $index === 0 ? 'border-green-500' : 'border-gray-300'; ?>">
+                                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                                     <div class="flex-1">
-                                        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                                        <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                                             <?php echo htmlspecialchars(basename($analysis['filename'])); ?>
                                             <?php if ($index === 0): ?>
-                                            <span class="text-sm text-green-600 bg-green-100 px-3 py-1 rounded-full ml-2">Latest Analysis</span>
+                                            <span class="text-xs sm:text-sm text-green-600 bg-green-100 px-2 sm:px-3 py-1 rounded-full ml-2">Latest Analysis</span>
                                             <?php endif; ?>
                                         </h3>
-                                        <p class="text-gray-600 mb-3">
+                                        <p class="text-sm sm:text-base text-gray-600 mb-3">
                                             Analyzed on <?php echo date('F j, Y \a\t g:i A', strtotime($analysis['upload_date'])); ?>
                                         </p>
-                                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                        <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                                             <span>📊 Complete Analysis Available</span>
                                             <span>📈 Charts & Insights Ready</span>
                                         </div>
                                     </div>
-                                    <div class="ml-6">
+                                    <div class="sm:ml-6 w-full sm:w-auto">
                                         <button onclick="loadAnalysis(<?php echo $analysis['id']; ?>)"
-                                                class="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-md">
+                                                class="w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-md whitespace-nowrap">
                                             View Analysis
                                         </button>
                                     </div>
