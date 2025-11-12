@@ -524,7 +524,7 @@ function determineBlueprintData($data) {
 
             <header class="text-center mb-10">
                 <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-2">
-                    &lt;FName&gt;, Here's Your Personalized Wealth Blueprint
+                    <?php echo $user['name']; ?>, Here's Your Personalized Wealth Blueprint
                 </h1>
                 <p id="blueprintIntro" class="text-xl text-indigo-600 font-semibold">
                     <?php if (isset($blueprintData['key_insights']) && is_array($blueprintData['key_insights'])): ?>
@@ -539,7 +539,7 @@ function determineBlueprintData($data) {
             <section class="mb-12 border-b pb-8">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">1. Your Personalized 50/30/20 Snapshot</h2>
                 <p class="text-lg text-gray-600 mb-8">
-                &lt;FNAME&gt;, based on your needs we can identify from your bank statement, it seems the <strong>50/30/20 Rule</strong> will be well suited to you. This rule for managing finances better is the industry standard for financial health. Below is your current allocation, revealing exactly where your money is currently going versus the target. </p>
+                <?php echo $user['name']; ?>, based on your needs we can identify from your bank statement, it seems the <strong>50/30/20 Rule</strong> will be well suited to you. This rule for managing finances better is the industry standard for financial health. Below is your current allocation, revealing exactly where your money is currently going versus the target. </p>
                 <p class="text-lg text-gray-600 mb-8">&nbsp;</p>
                 <p class="text-lg text-gray-600 mb-8">Here  is how you should ideally be allocating your monthly income, which will allow you to live comfortably within your means, as well as work on doing some background money management that will help you build wealth over the longer term.</p>
 
