@@ -5,7 +5,10 @@ header('Content-Type: application/json');
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['success' => false, 'message' => 'User not logged in']);
+    echo json_encode([
+        'success' => false,
+        'redirect' => 'login.php'
+    ]);
     exit;
 }
 
