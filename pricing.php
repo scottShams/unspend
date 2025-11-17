@@ -1,12 +1,25 @@
 <?php
 // Landing/Home Page
+// Landing/Home Page
 session_start();
 
-// Check if user is logged in
-if (!isset($_SESSION['user_email']) || empty($_SESSION['user_email'])) {
+// Check if BOTH session AND cookie are empty → redirect user
+if (
+    (!isset($_SESSION['user_email']) || empty($_SESSION['user_email'])) &&
+    (!isset($_COOKIE['user_email']) || empty($_COOKIE['user_email']))
+) {
     header('Location: index.php');
     exit();
 }
+
+// If session is empty BUT cookie exists → restore session automatically
+if (
+    (!isset($_SESSION['user_email']) || empty($_SESSION['user_email'])) &&
+    (isset($_COOKIE['user_email']) && !empty($_COOKIE['user_email']))
+) {
+    $_SESSION['user_email'] = $_COOKIE['user_email'];
+}
+
 require 'vendor/autoload.php';
 require 'config/database.php';
 require_once 'functions/user_management.php';
