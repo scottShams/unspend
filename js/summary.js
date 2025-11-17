@@ -183,12 +183,35 @@ function renderSummaryPage() {
 // Include common functions
 // Modal and upload functions are now in js/common.js
 
+// Function to handle section visibility and button states
+function updateSectionVisibility(showHistory = false) {
+    const historySection = document.getElementById('historySection');
+    const analysisSection = document.getElementById('analysisSection');
+    const blueprintCTA = document.getElementById('blueprintCTA');
+    const backToHistoryButtons = document.getElementById('backToHistoryButtons');
+    const analyzeAnotherPdfBtn = document.getElementById('analyzeAnotherPdfBtn');
+
+    if (showHistory) {
+        // Show history section - hide blueprintCTA, show only "Analyze Another PDF" button
+        if (historySection) historySection.classList.remove('hidden');
+        if (analysisSection) analysisSection.classList.add('hidden');
+        if (blueprintCTA) blueprintCTA.classList.add('hidden');
+        if (backToHistoryButtons) backToHistoryButtons.classList.add('hidden');
+        if (analyzeAnotherPdfBtn) analyzeAnotherPdfBtn.classList.remove('hidden');
+    } else {
+        // Show analysis section - show blueprintCTA and both buttons
+        if (historySection) historySection.classList.add('hidden');
+        if (analysisSection) analysisSection.classList.remove('hidden');
+        if (blueprintCTA) blueprintCTA.classList.remove('hidden');
+        if (backToHistoryButtons) backToHistoryButtons.classList.remove('hidden');
+        if (analyzeAnotherPdfBtn) analyzeAnotherPdfBtn.classList.add('hidden');
+    }
+}
+
 // Tab switching
 document.addEventListener('DOMContentLoaded', () => {
     const historyTab = document.getElementById('historyTab');
     const analysisTab = document.getElementById('analysisTab');
-    const historySection = document.getElementById('historySection');
-    const analysisSection = document.getElementById('analysisSection');
     const backToHistory = document.getElementById('backToHistory');
     const unlockBtn = document.getElementById('unlockBlueprintBtn');
 
@@ -200,10 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const showSection = urlParams.get('show');
 
     if (showSection === 'analysis') {
-        // Show analysis section and unlock button
-        if (historySection) historySection.classList.add('hidden');
-        if (analysisSection) analysisSection.classList.remove('hidden');
-        if (unlockBtn) unlockBtn.style.display = 'inline-block';
+        // Show analysis section with all buttons and CTA
+        updateSectionVisibility(false);
 
         // Auto-load latest analysis if available
         if (window.analysisData && window.analysisData.expenses && window.analysisData.expenses.length > 0) {
@@ -214,33 +235,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } else {
         // Default to history section on page load
-        if (historySection) historySection.classList.remove('hidden');
-        if (analysisSection) analysisSection.classList.add('hidden');
-        if (unlockBtn) unlockBtn.style.display = 'none';
+        updateSectionVisibility(true);
     }
 
     if (historyTab) {
         historyTab.addEventListener('click', () => {
-            if (historySection) historySection.classList.remove('hidden');
-            if (analysisSection) analysisSection.classList.add('hidden');
-            // Hide unlock button when showing history
-            if (unlockBtn) unlockBtn.style.display = 'none';
+            updateSectionVisibility(true);
         });
     }
 
     if (analysisTab) {
         analysisTab.addEventListener('click', () => {
-            if (historySection) historySection.classList.add('hidden');
-            if (analysisSection) analysisSection.classList.remove('hidden');
-            // Show unlock button when showing single analysis
-            if (unlockBtn) unlockBtn.style.display = 'inline-block';
+            updateSectionVisibility(false);
             ensureSectionVisible(renderSummaryPage);
         });
     }
 
     if (backToHistory) {
         backToHistory.addEventListener('click', () => {
-            if (historyTab) historyTab.click();
+            if (historyTab) {
+                historyTab.click();
+            } else {
+                // If no tabs, just show history directly
+                updateSectionVisibility(true);
+            }
         });
     }
 
@@ -275,14 +293,8 @@ function loadAnalysis(analysisId) {
             // Update global currency
             window.currency = window.analysisData.currency;
 
-            // Show analysis section and unlock button
-            const historySection = document.getElementById('historySection');
-            const analysisSection = document.getElementById('analysisSection');
-            const unlockBtn = document.getElementById('unlockBlueprintBtn');
-
-            if (historySection) historySection.classList.add('hidden');
-            if (analysisSection) analysisSection.classList.remove('hidden');
-            if (unlockBtn) unlockBtn.style.display = 'inline-block';
+            // Show analysis section with all buttons and CTA
+            updateSectionVisibility(false);
 
             renderSummaryPage();
             window.scrollTo({ top: 0, behavior: 'smooth' });

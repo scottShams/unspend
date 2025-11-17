@@ -119,25 +119,37 @@
                         </div>
                     </div>
 
-                    <!-- Back to History Button -->
-                    <div class="mt-8 text-center">
-                        <button id="backToHistory" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors duration-200 shadow-md">
+                    <!-- Back to History Button - Only show when viewing specific analysis -->
+                    <div id="backToHistoryButtons" class="mt-8 text-center flex justify-center gap-4">
+                        <button id="backToHistory"
+                            class="w-64 bg-gray-600 hover:bg-gray-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors duration-200 shadow-md">
                             ← View all your previous Expense analysis
                         </button>
+
+                        <button onclick="openUploadModal()"
+                            class="w-64 px-8 py-4 bg-green-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105">
+                            Analyze Another PDF
+                        </button>
                     </div>
+
+                </div>
+
+                <!-- Analyze Another PDF Button - Show when viewing history -->
+                <div id="analyzeAnotherPdfBtn" class="mt-8 text-center flex justify-center gap-4 hidden">
+                    <button onclick="openUploadModal()"
+                        class="w-64 px-8 py-4 bg-green-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105">
+                        Analyze Another PDF
+                    </button>
                 </div>
 
                 <!-- Call to Action for Blueprint -->
-                <div id="blueprintCTA" class="mt-16 text-center bg-purple-50 p-8 rounded-xl shadow-2xl border-4 border-violet-700">
+                <div id="blueprintCTA" class="mt-16 text-center bg-purple-50 p-8 rounded-xl shadow-2xl border-4 border-violet-700 hidden">
                     <h3 class="text-3xl font-bold text-violet-800 mb-4">Ready for the Action Plan?</h3>
                     <p class="text-xl text-gray-700 mb-6">We've shown you how you are spending. But what do you do next? <br /><br />Most people don't know what they should be doing to improve the situation. We'll show you within few seconds exactly what you need to do <strong>based on your spending habits we analysed</strong>. Simply Follow the Blueprint we will create for you, every Month.<br /><br />Go Ahead, Unlock the <strong>Wealth Blueprint</strong> for personalized, step-by-step instructions on eliminating those spending leaks, and building wealth.</p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <a href="#" id="unlockBlueprintBtn" class="flat-cta text-white py-3 px-8 rounded-lg font-bold text-lg uppercase shadow-xl">
                             Unlock the Blueprint Now
-                      </a>
-                        <button onclick="openUploadModal()" class="px-8 py-4 bg-green-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300">
-                            Analyze Another PDF
-                        </button>
+                        </a>
                   </div>
                 </div>
             </div>
