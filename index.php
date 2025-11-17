@@ -10,18 +10,22 @@ $userManager = new UserManagement($db->getConnection());
 $userHasAccount = false;
 $userName = $userEmail = $userIncome = '';
 
-// --- Check existing user (by cookie or session)
+$user = null;
+
+// --- Check existing user (cookie first, then session)
 if (!empty($_COOKIE['user_email'])) {
     $user = $userManager->getUserByEmail($_COOKIE['user_email']);
 } elseif (!empty($_SESSION['user_id'])) {
     $user = $userManager->getUserById($_SESSION['user_id']);
-} else {
-    $user = null;
 }
 
 if ($user) {
     $userHasAccount = true;
-    [$userName, $userEmail, $userIncome] = [$user['name'], $user['email'], $user['income'] ?? ''];
+
+    $id = $user['id'];
+    $userName = $user['name'];
+    $userEmail = $user['email'];
+    $userIncome = $user['income'] ?? '';
 
     $analysisCount = $userManager->getCompletedAnalysisCount($user['id']);
     $additionalCredits = (int)($user['additional_credits'] ?? 0);
@@ -30,10 +34,29 @@ if ($user) {
     $remaining = max(0, ($freeLimit - $analysisCount) + $additionalCredits);
 
     // Set persistent cookies
-    foreach (['name' => $userName, 'email' => $userEmail, 'income' => $userIncome] as $key => $val) {
-        if (!empty($val)) setcookie("user_$key", $val, time() + 15*24*60*60, '/');
+    foreach ([
+        'name' => $userName,
+        'email' => $userEmail,
+        'income' => $userIncome
+    ] as $key => $val) {
+        if (!empty($val)) {
+            setcookie("user_$key", $val, time() + 15 * 24 * 60 * 60, '/');
+        }
+    }
+
+    // Restore session values properly
+    foreach ([
+        'id' => $id,
+        'name' => $userName,
+        'email' => $userEmail,
+        'income' => $userIncome
+    ] as $key => $val) {
+        if (!empty($val)) {
+            $_SESSION["user_$key"] = $val;
+        }
     }
 }
+
 // --- If not found, fallback to temporary session data
 elseif (isset($_SESSION['temp_name'], $_SESSION['temp_email'], $_SESSION['temp_income'])) {
     [$userName, $userEmail, $userIncome] = [$_SESSION['temp_name'], $_SESSION['temp_email'], $_SESSION['temp_income']];
