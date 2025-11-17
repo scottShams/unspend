@@ -305,7 +305,7 @@ async function generatePdf_bkup() {
     }
 }
 
-async function generatePdf() {
+async function generatePdf_old() {
     const downloadBtn = document.getElementById('downloadPdfButton');
     const content = document.getElementById('blueprint-content-container');
     const elementsToHide = document.querySelectorAll('.pdf-hide');
@@ -351,6 +351,52 @@ async function generatePdf() {
     } finally {
         // 🔹 Show elements back
         elementsToHide.forEach(el => el.style.display = '');
+        downloadBtn.textContent = originalText;
+        downloadBtn.disabled = false;
+    }
+}
+
+async function generatePdf() {
+    const downloadBtn = document.getElementById('downloadPdfButton');
+    const sections = document.querySelectorAll('#blueprint-content-container > section, #blueprint-content-container > header');
+
+    if (!downloadBtn || !sections.length) return;
+
+    const originalText = downloadBtn.textContent;
+    downloadBtn.textContent = 'Generating PDF...';
+    downloadBtn.disabled = true;
+
+    try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const margin = 10;
+
+        let positionY = margin;
+
+        for (let i = 0; i < sections.length; i++) {
+            const canvas = await html2canvas(sections[i], { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#fff' });
+            const imgData = canvas.toDataURL('image/jpeg', 0.9);
+
+            const contentWidth = pdfWidth - 2 * margin;
+            const contentHeight = (canvas.height * contentWidth) / canvas.width;
+
+            if (positionY + contentHeight > pdfHeight) {
+                pdf.addPage();
+                positionY = margin;
+            }
+
+            pdf.addImage(imgData, 'JPEG', margin, positionY, contentWidth, contentHeight);
+            positionY += contentHeight + 5; // small gap between sections
+        }
+
+        pdf.save(`Wealth_Blueprint-${new Date().toISOString().split('T')[0]}.pdf`);
+
+    } catch (err) {
+        console.error('PDF generation failed:', err);
+        alert('Failed to generate PDF. Check console.');
+    } finally {
         downloadBtn.textContent = originalText;
         downloadBtn.disabled = false;
     }

@@ -522,17 +522,31 @@ function determineBlueprintData($data) {
     <div id="blueprintPage" class="py-16 md:py-24 bg-gray-50 min-h-screen <?php echo !$hasBlueprintData ? 'hidden' : ''; ?>">
         <div id="blueprint-content-container" class="max-w-4xl mx-auto bg-white p-6 sm:p-10 rounded-xl shadow-2xl">
 
-            <header class="text-center mb-10">
-                <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-2">
+            <header style="text-align:center; margin-bottom:30px;">
+    
+                <h1 style="
+                    font-size:28px;
+                    font-weight:800;
+                    color:#111;
+                    margin:0 0 10px 0;
+                ">
                     <?php echo $user['name']; ?>, Here's Your Personalized Wealth Blueprint
                 </h1>
-                <p id="blueprintIntro" class="text-xl text-indigo-600 font-semibold">
-                    <?php if (isset($blueprintData['key_insights']) && is_array($blueprintData['key_insights'])): ?>
-                        Follow this Action Plan to help you Manage your Finances better and Build Wealth <br /> You Financial Health Score is: <?php echo number_format($blueprintData['financial_health_score'] ?? 0, 1); ?>/100
-                    <?php else: ?>
-                        Action Plan to Recover <?php echo $currencySymbol; ?><?php echo number_format($blueprintData['leakTotal'] ?? 0, 2); ?> in Monthly Leaks.
-                    <?php endif; ?>
-                </p>
+
+                <?php if (isset($blueprintData['key_insights']) && is_array($blueprintData['key_insights'])): ?>
+                    <p style="font-size:18px; color:#4F46E5; font-weight:600; margin:0;">
+                        Follow this Action Plan to help you Manage your Finances better and Build Wealth
+                    </p>
+                    <p style="font-size:18px; color:#4F46E5; font-weight:600; margin:5px 0 0;">
+                        Your Financial Health Score is: <?php echo number_format($blueprintData['financial_health_score'] ?? 0, 1); ?>/100
+                    </p>
+                <?php else: ?>
+                    <p style="font-size:18px; color:#4F46E5; font-weight:600; margin:0;">
+                        Action Plan to Recover <?php echo $currencySymbol; ?><?php echo number_format($blueprintData['leakTotal'] ?? 0, 2); ?>
+                        in Monthly Leaks.
+                    </p>
+                <?php endif; ?>
+
             </header>
 
             <!-- Wealth Allocation Section -->
@@ -786,6 +800,7 @@ function determineBlueprintData($data) {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 /* Blueprint Custom CSS for the simulated chart */
@@ -812,6 +827,19 @@ function determineBlueprintData($data) {
     justify-content: center;
     text-align: center;
 }
+
+#blueprint-content-container {
+    width: 800px; /* fixed width to match PDF page width */
+    max-width: none !important;
+    margin: auto;
+}
+
+#blueprintPage {
+    min-height: auto !important;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
 /* Print Styles for PDF */
 @media print {
     body { background-color: white !important; }
