@@ -767,7 +767,7 @@ function determineBlueprintData($data) {
             <!-- PDF Download CTA -->
             <div class="text-center mt-10 pdf-hide">
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button id="downloadPdfButton" onclick="generatePdf()" class="px-8 py-4 bg-indigo-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
+                    <button id="downloadPdfButton" class="px-8 py-4 bg-indigo-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
                         Download Blueprint as PDF
                     </button>
                     <button onclick="openUploadModal()" class="px-8 py-4 bg-violet-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-violet-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-violet-300">
