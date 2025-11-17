@@ -773,6 +773,9 @@ function determineBlueprintData($data) {
                     <button onclick="openUploadModal()" class="px-8 py-4 bg-violet-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-violet-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-violet-300">
                         Analyze Another PDF
                     </button>
+                    <a href="summary.php" class="px-8 py-4 bg-violet-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-violet-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-violet-300">
+                        Back to summary
+                    </a>
                 </div>
                 <p class="text-sm text-gray-500 mt-3">Keep this blueprint handy as you adjust your spending habits.</p>
             </div>
