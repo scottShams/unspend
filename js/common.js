@@ -538,7 +538,13 @@ function stopPreloaderTextUpdates() {
 }
 // Upgrade Plan Function
 window.upgradePlan = function(planType) {
-    // Show loading state
+    // Check login first
+    if (!isLoggedIn) {
+        window.location.href = "login.php";
+        return;
+    }
+
+    // Rest of your upgrade code...
     Swal.fire({
         title: 'Processing...',
         text: 'Please wait while we upgrade your plan.',
@@ -549,51 +555,41 @@ window.upgradePlan = function(planType) {
         }
     });
 
-    // Determine credits to add based on plan
     const creditsToAdd = planType === 'monthly' ? 1 : 12;
 
-    // Update session with new credits (you'll need to implement this on the server side)
     fetch('update_credits.php', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             plan: planType,
             credits: creditsToAdd
         })
     })
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
         if (data.success) {
-            // Show success message
             Swal.fire({
                 icon: 'success',
                 title: 'Upgrade Successful!',
-                text: `You've unlocked ${creditsToAdd} more credit${creditsToAdd > 1 ? 's' : ''}! You can now analyze another PDF.`,
-                confirmButtonText: 'Continue Analyzing'
+                text: `You've unlocked ${creditsToAdd} more credit${creditsToAdd > 1 ? 's' : ''}!`,
+                confirmButtonText: 'Continue'
             }).then(() => {
-                // Redirect back to index.php or wherever the upload modal is
                 window.location.href = 'index.php';
             });
         } else {
-            // Show error message
             Swal.fire({
                 icon: 'error',
                 title: 'Upgrade Failed',
-                text: data.message || 'Something went wrong. Please try again.',
-                confirmButtonText: 'OK'
+                text: data.message || 'Something went wrong.'
             });
         }
     })
     .catch(error => {
-        console.error('Error upgrading plan:', error);
-        console.log('Error details:', error);
         Swal.fire({
             icon: 'error',
             title: 'Connection Error',
-            text: 'Please check your internet connection and try again.',
-            confirmButtonText: 'OK'
+            text: 'Please check your internet and try again.'
         });
     });
 };
+
