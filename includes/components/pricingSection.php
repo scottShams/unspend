@@ -79,5 +79,10 @@
 </section>
 
 <script>
-    const isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    const isLoggedIn = <?php 
+        echo (
+            (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) || 
+            (isset($_COOKIE['user_email']) && !empty($_COOKIE['user_email']))
+        ) ? 'true' : 'false';
+    ?>;
 </script>
