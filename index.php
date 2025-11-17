@@ -40,7 +40,7 @@ if ($user) {
         'income' => $userIncome
     ] as $key => $val) {
         if (!empty($val)) {
-            setcookie("user_$key", $val, time() + 15 * 24 * 60 * 60, '/');
+            setcookie("user_$key", $val, time() + 90 * 24 * 60 * 60, '/');
         }
     }
 
@@ -62,7 +62,7 @@ elseif (isset($_SESSION['temp_name'], $_SESSION['temp_email'], $_SESSION['temp_i
     [$userName, $userEmail, $userIncome] = [$_SESSION['temp_name'], $_SESSION['temp_email'], $_SESSION['temp_income']];
 
     foreach (['name' => $userName, 'email' => $userEmail, 'income' => $userIncome] as $key => $val) {
-        if (!empty($val)) setcookie("user_$key", $val, time() + 15*24*60*60, '/');
+        if (!empty($val)) setcookie("user_$key", $val, time() + 90*24*60*60, '/');
     }
 }
 

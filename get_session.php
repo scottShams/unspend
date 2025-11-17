@@ -52,10 +52,10 @@ try {
             $_SESSION['additional_credits'] = $additionalCredits;
             $_SESSION['additional_credits_total'] = $additionalCreditsTotal;
 
-            // Update cookies (expires in 15 days)
-            setcookie('user_email', $user['email'], time() + 15*24*60*60, "/");
-            setcookie('user_name', $user['name'], time() + 15*24*60*60, "/");
-            setcookie('user_income', $user['income'], time() + 15*24*60*60, "/");
+            // Update cookies (expires in 90 days)
+            setcookie('user_email', $user['email'], time() + 90*24*60*60, "/");
+            setcookie('user_name', $user['name'], time() + 90*24*60*60, "/");
+            setcookie('user_income', $user['income'], time() + 90*24*60*60, "/");
         }
     }
 
