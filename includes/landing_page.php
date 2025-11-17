@@ -175,63 +175,8 @@
                 </div>
             </div>
         </section>
-
-        <!-- Pricing Section -->
-        <section class="py-20 bg-gray-900" id="pricing">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 class="text-4xl font-extrabold text-white mb-12">Choose Your Path to Clarity</h2>
-                <p class="text-2xl text-amber-300 mb-10">Start with <strong>3 MONTHS FREE</strong> — Zero obligation, pure insight.</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-                    <!-- Plan 1: Free Trial -->
-                    <div class="bg-white p-8 rounded-xl shadow-2xl border-4 border-yellow-400">
-                        <h3 class="text-3xl font-bold mb-4 text-yellow-600">3 FREE Credits</h3>
-                        <p class="text-5xl font-extrabold mb-6">$0</p>
-                        <p class="text-gray-600 mb-8 font-medium">Analyze your first 3 months of bank statements to get a taste of true financial control.</p>
-                        <ul class="text-left space-y-3 text-gray-700 mb-8">
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> 3 Months of Analysis</li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> AI Categorization & Summary</li>
-                            <li class="flex items-center text-gray-400"><svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg> Monthly Upload Reminder (X)</li>
-                            <li class="flex items-center mt-4 text-sm font-semibold text-red-600">**+ Optional  <a href="what-is-the-blueprint"> Blueprint </a> Upgrade**</li>
-                        </ul>
-                        <a href="#" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-lg shadow-md block cta-trigger" data-user-has-account="<?php echo $userHasAccount ? 'true' : 'false'; ?>"><?php echo $userHasAccount ? 'Upload Statement' : 'Get Started FREE'; ?></a>
-                    </div>
-
-                    <!-- Plan 2: Monthly Subscription (Featured) -->
-                    <div class="bg-purple-900 p-8 rounded-xl shadow-2xl transform scale-105 border-4 border-amber-400">
-                        <h3 class="text-3xl font-bold mb-4 text-amber-400">Monthly Insights</h3>
-                        <p class="text-5xl font-extrabold mb-6 text-white"><span class="text-base font-normal block">$4.99/1 credit</span>$1.99</p>
-                        <p class="text-purple-200 mb-8 font-medium">Continuous, up-to-date analysis to ensure your spending habits stay optimized month after month.</p>
-                        <ul class="text-left space-y-3 text-white mb-8">
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Unlimited Monthly Analyses</li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> AI Categorization & Summary</li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Pattern Detection</li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Monthly Upload Reminder</li>
-                            <li class="flex items-center mt-4 text-sm font-semibold text-amber-300">**+ Optional <a href="what-is-the-blueprint"> Blueprint </a> Upgrade**</li>
-                        </ul>
-                        <a href="#" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg shadow-md block cta-trigger" data-user-has-account="<?php echo $userHasAccount ? 'true' : 'false'; ?>"><?php echo $userHasAccount ? 'Upload Statement' : 'Subscribe Now'; ?></a>
-                    </div>
-
-                    <!-- Plan 3: Annual Subscription -->
-                    <div class="bg-white p-8 rounded-xl shadow-2xl border-4 border-yellow-400">
-                        <h3 class="text-3xl font-bold mb-4 text-yellow-600">Annual Clarity </h3>
-                        <p class="text-5xl font-extrabold mb-6">
-                       <p class="text-5xl font-extrabold mb-6 text-dark"><span class="text-base font-normal block">$19.99/12 credit</span>$49.99</p>
-                        <p class="text-gray-600 mb-8 font-medium">Commit to a year of financial mastery and save big—get two months free!</p>
-                        <ul class="text-left space-y-3 text-gray-700 mb-8">
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Unlimited Analyses</li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> AI Categorization & Summary</li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Pattern Detection</li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Monthly Upload Reminder</li>
-                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Priority Support</li>
-                            <li class="flex items-center mt-4 text-sm font-semibold text-red-600">**+ Optional  <a href="what-is-the-blueprint"> Blueprint </a> Upgrade**</li>
-                        </ul>
-                        <a href="#" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-lg shadow-md block cta-trigger" data-user-has-account="<?php echo $userHasAccount ? 'true' : 'false'; ?>"><?php echo $userHasAccount ? 'Upload Statement' : 'Subscribe Annual & Save'; ?></a>
-                    </div>
-                </div>
-            </div>
-        </section>
+            
+        <?php include('components/pricingSection.php') ?>
     </div>
 
     <!-- SUMMARY PAGE CONTENT CONTAINER (Hidden by default, shown after AI analysis) -->
