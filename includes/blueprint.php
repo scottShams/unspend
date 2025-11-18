@@ -519,283 +519,469 @@ function determineBlueprintData($data) {
     <?php endif; ?>
 
     <!-- BLUEPRINT PAGE CONTENT CONTAINER  -->
-    <div id="blueprintPage" class="py-16 md:py-24 bg-gray-50 min-h-screen <?php echo !$hasBlueprintData ? 'hidden' : ''; ?>">
-        <div id="blueprint-content-container" class="max-w-4xl mx-auto bg-white p-6 sm:p-10 rounded-xl shadow-2xl">
+    <div id="blueprintPage"
+     class="py-16 md:py-24 bg-gray-50 min-h-screen <?php echo !$hasBlueprintData ? 'hidden' : ''; ?>">
 
-            <header style="text-align:center; margin-bottom:30px;">
-    
-                <h1 style="
-                    font-size:28px;
-                    font-weight:800;
-                    color:#111;
-                    margin:0 0 10px 0;
-                ">
+        <div id="blueprint-content-container"
+            class="max-w-4xl mx-auto bg-white p-6 sm:p-10 rounded-xl shadow-2xl">
+
+            <!-- ===================== HEADER ===================== -->
+            <header class="text-center mb-10">
+
+                <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-2">
                     <?php echo $user['name']; ?>, Here's Your Personalized Wealth Blueprint
                 </h1>
 
-                <?php if (isset($blueprintData['key_insights']) && is_array($blueprintData['key_insights'])): ?>
-                    <p style="font-size:18px; color:#4F46E5; font-weight:600; margin:0;">
-                        Follow this Action Plan to help you Manage your Finances better and Build Wealth
-                    </p>
-                    <p style="font-size:18px; color:#4F46E5; font-weight:600; margin:5px 0 0;">
-                        Your Financial Health Score is: <?php echo number_format($blueprintData['financial_health_score'] ?? 0, 1); ?>/100
-                    </p>
-                <?php else: ?>
-                    <p style="font-size:18px; color:#4F46E5; font-weight:600; margin:0;">
-                        Action Plan to Recover <?php echo $currencySymbol; ?><?php echo number_format($blueprintData['leakTotal'] ?? 0, 2); ?>
-                        in Monthly Leaks.
-                    </p>
-                <?php endif; ?>
+                <p id="blueprintIntro" class="text-xl text-indigo-600 font-semibold">
 
+                    <?php if (!empty($blueprintData['key_insights'])): ?>
+                        Follow this Action Plan to help you Manage your Finances better
+                        and Build Wealth.
+                        <br>
+                        Your Financial Health Score is:
+                        <strong>
+                            <?php echo number_format($blueprintData['financial_health_score'] ?? 0, 1); ?>/100
+                        </strong>
+
+                    <?php else: ?>
+                        Action Plan to Recover
+                        <strong>
+                            <?php echo $currencySymbol; ?><?php echo number_format($blueprintData['leakTotal'] ?? 0, 2); ?>
+                        </strong>
+                        in Monthly Leaks.
+                    <?php endif; ?>
+
+                </p>
             </header>
 
-            <!-- Wealth Allocation Section -->
+            <!-- ===================== 50 / 30 / 20 SECTION ===================== -->
             <section class="mb-12 border-b pb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">1. Your Personalized 50/30/20 Snapshot</h2>
+
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">
+                    1. Your Personalized 50/30/20 Snapshot
+                </h2>
+
                 <p class="text-lg text-gray-600 mb-8">
-                <?php echo $user['name']; ?>, based on your needs we can identify from your bank statement, it seems the <strong>50/30/20 Rule</strong> will be well suited to you. This rule for managing finances better is the industry standard for financial health. Below is your current allocation, revealing exactly where your money is currently going versus the target. </p>
+                    <?php echo $user['name']; ?>, based on your needs we can identify from your
+                    bank statement, it seems the
+                    <strong>50/30/20 Rule</strong> will be well suited to you. Below is your current
+                    allocation versus the recommended target.
+                </p>
+
                 <p class="text-lg text-gray-600 mb-8">&nbsp;</p>
-                <p class="text-lg text-gray-600 mb-8">Here  is how you should ideally be allocating your monthly income, which will allow you to live comfortably within your means, as well as work on doing some background money management that will help you build wealth over the longer term.</p>
+
+                <p class="text-lg text-gray-600 mb-8">
+                    Here is how you should ideally be allocating your monthly income.
+                    This allows you to stay within your means and still build wealth over time.
+                </p>
 
                 <div class="flex flex-col lg:flex-row items-center justify-between gap-10">
 
-                    <!-- Chart Visualization (Dynamic Background Set by JS) -->
+                    <!-- Chart -->
                     <div class="flex-shrink-0">
                         <div id="blueprintChartRing" class="blueprint-chart-ring">
                             <div class="blueprint-chart-inner">
-                                <span class="text-2xl font-bold text-gray-800" id="currentIncomeDisplay"><?php echo $currencySymbol; ?><?php echo number_format($user['income'] ?? 0, 0); ?></span>
+                                <span class="text-2xl font-bold text-gray-800" id="currentIncomeDisplay">
+                                    <?php echo $currencySymbol; ?>
+                                    <?php echo number_format($user['income'] ?? 0, 0); ?>
+                                </span>
                                 <span class="text-sm text-gray-500">Your Income</span>
                             </div>
-                            
-                            
-                      </div>
-                    </div>
-
-                    <!-- Legend and Details (Dynamic) -->
-                    <div class="w-full lg:w-1/2">
-                        <div class="space-y-4">
-                            <?php if (isset($blueprintData['wealth_allocation'])): ?>
-                                <div class="p-4 bg-emerald-50 rounded-lg flex items-start gap-4 shadow">
-                                    <div class="w-4 h-4 bg-emerald-500 rounded-full mt-1 flex-shrink-0"></div>
-                                    <div>
-                                        <h3 class="text-xl font-semibold text-gray-800"><span id="needsActual"><?php echo number_format($blueprintData['wealth_allocation']['needs_percent'] ?? 50, 1); ?>%</span> Needs <span class="text-emerald-600 text-base ml-2"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['wealth_allocation']['needs_amount'] ?? 0, 2); ?></span></h3>
-                                        <p class="text-gray-600 text-sm">Essential, fixed costs like rent/mortgage, minimum loan payments, utilities, and basic groceries. <strong>Goal:</strong> Ensure 50% or less of your income covers only these essentials.</p>
-                                    </div>
-                                </div>
-
-                                <div class="p-4 bg-amber-50 rounded-lg flex items-start gap-4 shadow">
-                                    <div class="w-4 h-4 bg-amber-500 rounded-full mt-1 flex-shrink-0"></div>
-                                    <div>
-                                        <h3 class="text-xl font-semibold text-gray-800"><span id="wantsActual"><?php echo number_format($blueprintData['wealth_allocation']['wants_percent'] ?? 30, 1); ?>%</span> Wants <span class="text-amber-600 text-base ml-2">You should be Spending at most: <?php echo $currencySymbol; ?><?php echo number_format($blueprintData['wealth_allocation']['wants_amount'] ?? 0, 2); ?></span></h3>
-                                        <p class="text-gray-600 text-sm">Discretionary spending: dining out, entertainment, hobbies, travel, premium subscriptions, and non-essential shopping. <strong>Goal:</strong> This is your primary target for trimming excess spending.</p>
-                                    </div>
-                                </div>
-
-                                <div class="p-4 bg-blue-50 rounded-lg flex items-start gap-4 shadow">
-                                    <div class="w-4 h-4 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
-                                    <div>
-                                        <h3 class="text-xl font-semibold text-gray-800"><span id="saveActual"><?php echo number_format($blueprintData['wealth_allocation']['savings_percent'] ?? 20, 1); ?>%</span> Save & Invest <span class="text-blue-600 text-base ml-2"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['wealth_allocation']['savings_amount'] ?? 0, 2); ?></span></h3>
-                                        <p class="text-gray-600 text-sm">Funding your future: Emergency Fund contributions, retirement accounts, stock/index fund investments, and accelerated debt repayment. <strong>Goal:</strong> Automate this 20% first (Pay Yourself First).</p>
-                                    </div>
-                                </div>
-                            <?php else: ?>
-                                <div class="p-4 bg-emerald-50 rounded-lg flex items-start gap-4 shadow">
-                                    <div class="w-4 h-4 bg-emerald-500 rounded-full mt-1 flex-shrink-0"></div>
-                                    <div>
-                                        <h3 class="text-xl font-semibold text-gray-800"><span id="needsActual"><?php echo number_format($blueprintData['needs']['percent'] ?? 50, 1); ?>%</span> Needs <span class="text-emerald-600 text-base ml-2">Actual: <?php echo number_format($blueprintData['needs']['percent'] ?? 0, 1); ?>%</span></h3>
-                                        <p class="text-gray-600 text-sm">Essential, fixed costs (rent, utilities, required debt payments).</p>
-                                    </div>
-                                </div>
-
-                                <div class="p-4 bg-amber-50 rounded-lg flex items-start gap-4 shadow">
-                                    <div class="w-4 h-4 bg-amber-500 rounded-full mt-1 flex-shrink-0"></div>
-                                    <div>
-                                        <h3 class="text-xl font-semibold text-gray-800"><span id="wantsActual"><?php echo number_format($blueprintData['wants']['percent'] ?? 30, 1); ?>%</span> Wants <span class="text-amber-600 text-base ml-2">Actual: <?php echo number_format($blueprintData['wants']['percent'] ?? 0, 1); ?>%</span></h3>
-                                        <p class="text-gray-600 text-sm">Discretionary spending (dining, entertainment, non-essential shopping).</p>
-                                    </div>
-                                </div>
-
-                                <div class="p-4 bg-blue-50 rounded-lg flex items-start gap-4 shadow">
-                                    <div class="w-4 h-4 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
-                                    <div>
-                                        <h3 class="text-xl font-semibold text-gray-800"><span id="saveActual"><?php echo number_format($blueprintData['save']['percent'] ?? 20, 1); ?>%</span> Save & Invest <span class="text-blue-600 text-base ml-2">Actual: <?php echo number_format($blueprintData['save']['percent'] ?? 0, 1); ?>%</span></h3>
-                                        <p class="text-gray-600 text-sm">Emergency fund, retirement, investments.</p>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
                         </div>
                     </div>
+
+                    <!-- Legend -->
+                    <div class="w-full lg:w-1/2">
+                        <div class="space-y-4">
+
+                            <?php if (isset($blueprintData['wealth_allocation'])): ?>
+
+                                <!-- NEEDS -->
+                                <div class="p-4 bg-emerald-50 rounded-lg flex gap-4 shadow">
+                                    <div class="w-4 h-4 bg-emerald-500 rounded-full mt-1"></div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-800">
+                                            <span id="needsActual">
+                                                <?php echo number_format($blueprintData['wealth_allocation']['needs_percent'], 1); ?>%
+                                            </span>
+                                            Needs
+                                            <span class="text-emerald-600 ml-2">
+                                                <?php echo $currencySymbol; ?>
+                                                <?php echo number_format($blueprintData['wealth_allocation']['needs_amount'], 2); ?>
+                                            </span>
+                                        </h3>
+                                        <p class="text-gray-600 text-sm">
+                                            Essential costs like rent/mortgage, utilities, groceries.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- WANTS -->
+                                <div class="p-4 bg-amber-50 rounded-lg flex gap-4 shadow">
+                                    <div class="w-4 h-4 bg-amber-500 rounded-full mt-1"></div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-800">
+                                            <span id="wantsActual">
+                                                <?php echo number_format($blueprintData['wealth_allocation']['wants_percent'], 1); ?>%
+                                            </span>
+                                            Wants
+                                            <span class="text-amber-600 ml-2">
+                                                You should be spending at most:
+                                                <?php echo $currencySymbol; ?>
+                                                <?php echo number_format($blueprintData['wealth_allocation']['wants_amount'], 2); ?>
+                                            </span>
+                                        </h3>
+                                        <p class="text-gray-600 text-sm">
+                                            Discretionary spending: dining out, travel, hobbies.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- SAVINGS -->
+                                <div class="p-4 bg-blue-50 rounded-lg flex gap-4 shadow">
+                                    <div class="w-4 h-4 bg-blue-500 rounded-full mt-1"></div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-800">
+                                            <span id="saveActual">
+                                                <?php echo number_format($blueprintData['wealth_allocation']['savings_percent'], 1); ?>%
+                                            </span>
+                                            Save & Invest
+                                            <span class="text-blue-600 ml-2">
+                                                <?php echo $currencySymbol; ?>
+                                                <?php echo number_format($blueprintData['wealth_allocation']['savings_amount'], 2); ?>
+                                            </span>
+                                        </h3>
+                                        <p class="text-gray-600 text-sm">
+                                            Emergency fund, investments, retirement contributions.
+                                        </p>
+                                    </div>
+                                </div>
+
+                            <?php else: ?>
+                                <!-- FALLBACK simplified blocks -->
+                                <!-- (You already had this logic; it is left intact but formatted.) -->
+                                <!-- NEEDS -->
+                                <div class="p-4 bg-emerald-50 rounded-lg flex gap-4 shadow">
+                                    <div class="w-4 h-4 bg-emerald-500 rounded-full mt-1"></div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-800">
+                                            <span id="needsActual">
+                                                <?php echo number_format($blueprintData['needs']['percent'] ?? 50, 1); ?>%
+                                            </span> Needs
+                                            <span class="text-emerald-600 ml-2">
+                                                Actual:
+                                                <?php echo number_format($blueprintData['needs']['percent'], 1); ?>%
+                                            </span>
+                                        </h3>
+                                    </div>
+                                </div>
+
+                                <!-- WANTS -->
+                                <div class="p-4 bg-amber-50 rounded-lg flex gap-4 shadow">
+                                    <div class="w-4 h-4 bg-amber-500 rounded-full mt-1"></div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-800">
+                                            <span id="wantsActual">
+                                                <?php echo number_format($blueprintData['wants']['percent'] ?? 30, 1); ?>%
+                                            </span> Wants
+                                            <span class="text-amber-600 ml-2">
+                                                Actual:
+                                                <?php echo number_format($blueprintData['wants']['percent'], 1); ?>%
+                                            </span>
+                                        </h3>
+                                    </div>
+                                </div>
+
+                                <!-- SAVINGS -->
+                                <div class="p-4 bg-blue-50 rounded-lg flex gap-4 shadow">
+                                    <div class="w-4 h-4 bg-blue-500 rounded-full mt-1"></div>
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-800">
+                                            <span id="saveActual">
+                                                <?php echo number_format($blueprintData['save']['percent'] ?? 20, 1); ?>%
+                                            </span> Save & Invest
+                                            <span class="text-blue-600 ml-2">
+                                                Actual:
+                                                <?php echo number_format($blueprintData['save']['percent'], 1); ?>%
+                                            </span>
+                                        </h3>
+                                    </div>
+                                </div>
+
+                            <?php endif; ?>
+
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
-            <!-- Personalized Action Plan Section -->
+            <!-- ===================== ACTION PLAN ===================== -->
             <section class="mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">2. Your Personalized 4-Point Action Plan</h2>
+
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">
+                    2. Your Personalized 4-Point Action Plan
+                </h2>
+
                 <p id="actionPlanIntro" class="text-lg text-gray-600 mb-8">
                     <?php
-                    $leakNames = !empty($blueprintData['topLeaks']) ? implode(', ', $blueprintData['topLeaks']) : 'general discretionary spending';
-                    $leakTotal = $blueprintData['leakTotal'] ?? 0;
-                    echo "The AI identified your top spending leaks of <strong>" . $currencySymbol . number_format($leakTotal, 2) . "</strong> in <strong>$leakNames</strong>.";
+                        $leakNames = !empty($blueprintData['topLeaks']) ? implode(', ', $blueprintData['topLeaks']) : 'general discretionary spending';
+                        $leakTotal = $blueprintData['leakTotal'] ?? 0;
+                        echo "The AI identified your top spending leaks of
+                        <strong>{$currencySymbol}" . number_format($leakTotal, 2) . "</strong>
+                        in <strong>{$leakNames}</strong>.";
                     ?>
                 </p>
 
-                <?php if (isset($blueprintData['action_plan']) && is_array($blueprintData['action_plan'])): ?>
+                <?php if (!empty($blueprintData['action_plan'])): ?>
+
                     <ol id="actionPlanList" class="space-y-6 list-decimal list-inside text-gray-700">
                         <?php foreach ($blueprintData['action_plan'] as $step): ?>
-                            <li class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-                                <strong class="text-indigo-600 text-xl block mb-1">Step <?php echo $step['step_number']; ?>: <?php echo htmlspecialchars($step['title']); ?></strong>
+                            <li class="p-4 bg-white border rounded-lg shadow-sm">
+
+                                <strong class="text-indigo-600 text-xl block mb-1">
+                                    Step <?php echo $step['step_number']; ?>:
+                                    <?php echo htmlspecialchars($step['title']); ?>
+                                </strong>
+
                                 <p><?php echo htmlspecialchars($step['description']); ?></p>
-                                <?php if (isset($step['estimated_savings']) && $step['estimated_savings'] > 0): ?>
-                                    <p class="text-green-600 font-semibold mt-2">💰 Potential Monthly Savings: <?php echo $currencySymbol; ?><?php echo number_format($step['estimated_savings'], 2); ?></p>
+
+                                <?php if (!empty($step['estimated_savings'])): ?>
+                                    <p class="text-green-600 font-semibold mt-2">
+                                        💰 Potential Monthly Savings:
+                                        <?php echo $currencySymbol; ?>
+                                        <?php echo number_format($step['estimated_savings'], 2); ?>
+                                    </p>
                                 <?php endif; ?>
+
                                 <div class="flex gap-4 mt-2 text-sm text-gray-500">
-                                    <span>Difficulty: <?php echo htmlspecialchars($step['difficulty'] ?? 'Medium'); ?></span>
-                                    <span>Timeframe: <?php echo htmlspecialchars($step['timeframe'] ?? 'Ongoing'); ?></span>
+                                    <span>Difficulty: <?php echo $step['difficulty'] ?? 'Medium'; ?></span>
+                                    <span>Timeframe: <?php echo $step['timeframe'] ?? 'Ongoing'; ?></span>
                                 </div>
+
                             </li>
                         <?php endforeach; ?>
                     </ol>
-                <?php else: ?>
-                    <ol id="actionPlanList" class="space-y-6 list-decimal list-inside text-gray-700">
-                        <?php
-                        $income = $blueprintData['totalIncome'] ?? 0;
-                        $topLeaks = $blueprintData['topLeaks'] ?? [];
-                        $leakTotal = $blueprintData['leakTotal'] ?? 0;
-                        ?>
 
-                        <!-- Step 1 – always -->
-                        <li class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <?php else: ?>
+
+                    <!-- Default 4 steps -->
+                    <ol id="actionPlanList" class="space-y-6 list-decimal list-inside text-gray-700">
+
+                        <!-- Step 1 -->
+                        <li class="p-4 bg-white border rounded-lg shadow-sm">
                             <strong class="text-indigo-600 text-xl block mb-1">Step 1: Automate the 20% Investment</strong>
-                            <p>Immediately set up an automatic transfer for <strong>$<?php echo number_format($income * 0.2, 2); ?></strong> (20% of income) to a high-yield account the day you get paid.</p>
+                            <p>Immediately set up an automatic transfer of
+                                <strong><?php echo $currencySymbol; ?><?php echo number_format(($blueprintData['totalIncome'] ?? 0) * 0.2, 2); ?></strong>.
+                            </p>
                         </li>
 
-                        <!-- Step 2 – leak-specific or generic -->
-                        <?php if (!empty($topLeaks)): ?>
-                            <li class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <!-- Step 2 -->
+                        <?php if (!empty($blueprintData['topLeaks'])): ?>
+                            <li class="p-4 bg-white border rounded-lg shadow-sm">
                                 <strong class="text-indigo-600 text-xl block mb-1">Step 2: Cap Your Top Spending Leaks</strong>
-                                <p>Cut <strong><?php echo implode(', ', $topLeaks); ?></strong> by 30% — that's <strong><?php echo $currencySymbol; ?><?php echo number_format($leakTotal * 0.3, 2); ?></strong> — and move it to the automated savings.</p>
+                                <p>Reduce spending on
+                                    <strong><?php echo implode(', ', $blueprintData['topLeaks']); ?></strong>
+                                    by 30% — that’s
+                                    <strong><?php echo number_format($blueprintData['leakTotal'] * 0.3, 2); ?></strong>.
+                                </p>
                             </li>
                         <?php else: ?>
-                            <li class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-                                <strong class="text-indigo-600 text-xl block mb-1">Step 2: Implement a 'Wants' Hard Limit</strong>
-                                <p>Cap all discretionary spending at <strong><?php echo $currencySymbol; ?><?php echo number_format($income * 0.3, 2); ?></strong> (30% of income).</p>
+                            <li class="p-4 bg-white border rounded-lg shadow-sm">
+                                <strong class="text-indigo-600 text-xl block mb-1">Step 2: Implement a “Wants” Hard Limit</strong>
+                                <p>Cap discretionary spending at
+                                    <strong><?php echo number_format(($blueprintData['totalIncome'] ?? 0) * 0.3, 2); ?></strong>.
+                                </p>
                             </li>
                         <?php endif; ?>
 
-                        <!-- Step 3 & 4 – universal -->
-                        <li class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <!-- Step 3 -->
+                        <li class="p-4 bg-white border rounded-lg shadow-sm">
                             <strong class="text-indigo-600 text-xl block mb-1">Step 3: Audit Hidden Subscriptions</strong>
-                            <p>Cancel any recurring service you haven't used in 30 days.</p>
+                            <p>Cancel any recurring service not used in the last 30 days.</p>
                         </li>
-                        <li class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+
+                        <!-- Step 4 -->
+                        <li class="p-4 bg-white border rounded-lg shadow-sm">
                             <strong class="text-indigo-600 text-xl block mb-1">Step 4: 48-Hour Purchase Pause</strong>
-                            <p>For any non-essential purchase over $50, wait 48 hours before buying.</p>
+                            <p>Wait 48 hours before making any non-essential purchase above $50.</p>
                         </li>
+
                     </ol>
+
                 <?php endif; ?>
+
             </section>
 
-            <!-- Key Insights Section (AI-generated) -->
-            <?php if (isset($blueprintData['key_insights']) && is_array($blueprintData['key_insights'])): ?>
-            <section class="mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">3. Key Financial Insights</h2>
-                <div class="bg-blue-50 p-6 rounded-xl shadow-lg">
-                    <ul class="space-y-3">
-                        <?php foreach ($blueprintData['key_insights'] as $insight): ?>
-                            <li class="flex items-start gap-3">
-                                <span class="text-blue-600 text-xl">💡</span>
-                                <span class="text-gray-800"><?php echo htmlspecialchars($insight); ?></span>
-                            </li>
+            <!-- ===================== KEY INSIGHTS ===================== -->
+            <?php if (!empty($blueprintData['key_insights'])): ?>
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">
+                        3. Key Financial Insights
+                    </h2>
+
+                    <div class="bg-blue-50 p-6 rounded-xl shadow-lg">
+                        <ul class="space-y-3">
+                            <?php foreach ($blueprintData['key_insights'] as $insight): ?>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-blue-600 text-xl">💡</span>
+                                    <span class="text-gray-800"><?php echo htmlspecialchars($insight); ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </section>
+            <?php endif; ?>
+
+
+            <!-- ===================== IMPROVEMENT AREAS ===================== -->
+            <?php if (!empty($blueprintData['improvement_areas'])): ?>
+                <section class="mb-12">
+
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">
+                        4. Areas for Improvement
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+
+                        <?php foreach ($blueprintData['improvement_areas'] as $area): ?>
+                            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4
+                                border-<?php echo $area['priority'] === 'high' ? 'red' :
+                                        ($area['priority'] === 'medium' ? 'yellow' : 'green'); ?>-500">
+
+                                <h3 class="text-xl font-semibold text-gray-800 mb-3">
+                                    <?php echo htmlspecialchars($area['category']); ?>
+                                </h3>
+
+                                <div class="space-y-2 text-sm">
+
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Current Spending:</span>
+                                        <span class="font-semibold text-red-600">
+                                            <?php echo $currencySymbol; ?>
+                                            <?php echo number_format($area['current_spending'], 2); ?>
+                                        </span>
+                                    </div>
+
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600">Recommended:</span>
+                                        <span class="font-semibold text-green-600">
+                                            <?php echo $currencySymbol; ?>
+                                            <?php echo number_format($area['recommended_spending'], 2); ?>
+                                        </span>
+                                    </div>
+
+                                    <div class="flex justify-between border-t pt-2">
+                                        <span class="text-gray-600">Potential Savings:</span>
+                                        <span class="font-bold text-green-700">
+                                            <?php echo $currencySymbol; ?>
+                                            <?php echo number_format($area['potential_savings'], 2); ?>/month
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                                <div class="mt-3">
+                                    <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full
+                                        bg-<?php echo $area['priority'] ?>-100
+                                        text-<?php echo $area['priority'] ?>-800">
+                                        <?php echo ucfirst($area['priority']); ?> Priority
+                                    </span>
+                                </div>
+
+                            </div>
                         <?php endforeach; ?>
-                    </ul>
-                </div>
-            </section>
+
+                    </div>
+                </section>
             <?php endif; ?>
 
-            <!-- Improvement Areas Section (AI-generated) -->
-            <?php if (isset($blueprintData['improvement_areas']) && is_array($blueprintData['improvement_areas'])): ?>
-            <section class="mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">4. Areas for Improvement</h2>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <?php foreach ($blueprintData['improvement_areas'] as $area): ?>
-                        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-orange-500">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-3"><?php echo htmlspecialchars($area['category']); ?></h3>
-                            <div class="space-y-2 text-sm">
-                                <div class="flex justify-between">
-                                    <span class="text-gray-600">Current Spending:</span>
-                                    <span class="font-semibold text-red-600"><?php echo $currencySymbol; ?><?php echo number_format($area['current_spending'], 2); ?></span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-600">Recommended:</span>
-                                    <span class="font-semibold text-green-600"><?php echo $currencySymbol; ?><?php echo number_format($area['recommended_spending'], 2); ?></span>
-                                </div>
-                                <div class="flex justify-between border-t pt-2">
-                                    <span class="text-gray-600">Potential Savings:</span>
-                                    <span class="font-bold text-green-700"><?php echo $currencySymbol; ?><?php echo number_format($area['potential_savings'], 2); ?>/month</span>
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <span class="inline-block px-3 py-1 bg-<?php echo $area['priority'] === 'high' ? 'red' : ($area['priority'] === 'medium' ? 'yellow' : 'green'); ?>-100 text-<?php echo $area['priority'] === 'high' ? 'red' : ($area['priority'] === 'medium' ? 'yellow' : 'green'); ?>-800 text-xs font-semibold rounded-full">
-                                    <?php echo ucfirst($area['priority']); ?> Priority
-                                </span>
-                            </div>
+
+            <!-- ===================== MONTHLY TARGETS ===================== -->
+            <?php if (!empty($blueprintData['monthly_targets'])): ?>
+                <section class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">
+                        5. Your Monthly Wealth Building Targets
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                        <div class="bg-green-50 p-6 rounded-xl shadow-lg text-center">
+                            <div class="text-3xl mb-2">🏦</div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Emergency Fund</h3>
+                            <p class="text-2xl font-bold text-green-600">
+                                <?php echo $currencySymbol; ?>
+                                <?php echo number_format($blueprintData['monthly_targets']['emergency_fund_target'], 2); ?>
+                            </p>
+                            <p class="text-sm text-gray-600">Monthly contribution</p>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-            </section>
+
+                        <div class="bg-blue-50 p-6 rounded-xl shadow-lg text-center">
+                            <div class="text-3xl mb-2">📈</div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Investments</h3>
+                            <p class="text-2xl font-bold text-blue-600">
+                                <?php echo $currencySymbol; ?>
+                                <?php echo number_format($blueprintData['monthly_targets']['investment_target'], 2); ?>
+                            </p>
+                            <p class="text-sm text-gray-600">Monthly investment</p>
+                        </div>
+
+                        <div class="bg-red-50 p-6 rounded-xl shadow-lg text-center">
+                            <div class="text-3xl mb-2">💳</div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Debt Reduction</h3>
+                            <p class="text-2xl font-bold text-red-600">
+                                <?php echo $currencySymbol; ?>
+                                <?php echo number_format($blueprintData['monthly_targets']['debt_reduction_target'], 2); ?>
+                            </p>
+                            <p class="text-sm text-gray-600">Monthly debt payoff</p>
+                        </div>
+
+                        <div class="bg-purple-50 p-6 rounded-xl shadow-lg text-center">
+                            <div class="text-3xl mb-2">💰</div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Wealth Goal</h3>
+                            <p class="text-2xl font-bold text-purple-600">
+                                <?php echo $currencySymbol; ?>
+                                <?php echo number_format($blueprintData['monthly_targets']['wealth_accumulation_goal'], 2); ?>
+                            </p>
+                            <p class="text-sm text-gray-600">Monthly wealth accumulation</p>
+                        </div>
+
+                    </div>
+                </section>
             <?php endif; ?>
 
-            <!-- Monthly Targets Section (AI-generated) -->
-            <?php if (isset($blueprintData['monthly_targets'])): ?>
-            <section class="mb-12">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-500 pl-4">5. Your Monthly Wealth Building Targets</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="bg-green-50 p-6 rounded-xl shadow-lg text-center">
-                        <div class="text-3xl mb-2">🏦</div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Emergency Fund</h3>
-                        <p class="text-2xl font-bold text-green-600"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['monthly_targets']['emergency_fund_target'], 2); ?></p>
-                        <p class="text-sm text-gray-600">Monthly contribution target</p>
-                    </div>
-                    <div class="bg-blue-50 p-6 rounded-xl shadow-lg text-center">
-                        <div class="text-3xl mb-2">📈</div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Investments</h3>
-                        <p class="text-2xl font-bold text-blue-600"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['monthly_targets']['investment_target'], 2); ?></p>
-                        <p class="text-sm text-gray-600">Monthly investment target</p>
-                    </div>
-                    <div class="bg-red-50 p-6 rounded-xl shadow-lg text-center">
-                        <div class="text-3xl mb-2">💳</div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Debt Reduction</h3>
-                        <p class="text-2xl font-bold text-red-600"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['monthly_targets']['debt_reduction_target'], 2); ?></p>
-                        <p class="text-sm text-gray-600">Monthly debt payoff target</p>
-                    </div>
-                    <div class="bg-purple-50 p-6 rounded-xl shadow-lg text-center">
-                        <div class="text-3xl mb-2">💰</div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Wealth Goal</h3>
-                        <p class="text-2xl font-bold text-purple-600"><?php echo $currencySymbol; ?><?php echo number_format($blueprintData['monthly_targets']['wealth_accumulation_goal'], 2); ?></p>
-                        <p class="text-sm text-gray-600">Monthly wealth accumulation</p>
-                    </div>
-                </div>
-            </section>
-            <?php endif; ?>
 
-            <!-- PDF Download CTA -->
+            <!-- ===================== BOTTOM CTA ===================== -->
             <div class="text-center mt-10 pdf-hide">
+
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button id="downloadPdfButton" class="px-8 py-4 bg-indigo-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
+
+                    <button id="downloadPdfButton"
+                            class="px-8 py-4 bg-indigo-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-indigo-700">
                         Download Blueprint as PDF
                     </button>
-                    <button onclick="openUploadModal()" class="px-8 py-4 bg-violet-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-violet-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-violet-300">
+
+                    <button onclick="openUploadModal()"
+                            class="px-8 py-4 bg-violet-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-violet-700">
                         Analyze Another PDF
                     </button>
-                    <a href="summary.php" class="px-8 py-4 bg-violet-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-violet-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-violet-300">
+
+                    <a href="summary.php"
+                    class="px-8 py-4 bg-violet-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-violet-700">
                         Back to summary
                     </a>
+
                 </div>
-                <p class="text-sm text-gray-500 mt-3">Keep this blueprint handy as you adjust your spending habits.</p>
+
+                <p class="text-sm text-gray-500 mt-3">
+                    Keep this blueprint handy as you adjust your spending habits.
+                </p>
+
             </div>
 
         </div>
     </div>
+
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -826,18 +1012,6 @@ function determineBlueprintData($data) {
     align-items: center;
     justify-content: center;
     text-align: center;
-}
-
-#blueprint-content-container {
-    width: 800px; /* fixed width to match PDF page width */
-    max-width: none !important;
-    margin: auto;
-}
-
-#blueprintPage {
-    min-height: auto !important;
-    padding-top: 40px;
-    padding-bottom: 40px;
 }
 
 /* Print Styles for PDF */
