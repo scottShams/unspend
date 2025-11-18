@@ -3,6 +3,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize blueprint chart
     renderBlueprintChart();
 
+    // sent email functionality
+    const emailBlueprintBtn = document.getElementById('emailBlueprintButton');
+
+    if(emailBlueprintBtn) {
+        emailBlueprintBtn.addEventListener('click', emailBluePrint);
+    }
+
     // Set up PDF download functionality
     const downloadBtn = document.getElementById('downloadPdfButton');
     if (downloadBtn) {
@@ -400,6 +407,73 @@ async function generatePdf() {
         downloadBtn.textContent = originalText;
         downloadBtn.disabled = false;
     }
+}
+
+async function emailBluePrint() {
+    Swal.fire({
+        title: "Sending your blueprint...",
+        text: "Please wait a moment.",
+        icon: "info",
+        allowOutsideClick: false,
+        showConfirmButton: false
+    });
+
+    // Capture the blueprint content
+    const blueprintContent = document.getElementById('blueprint-content-container');
+    if (!blueprintContent) {
+        Swal.fire({
+            title: "Error!",
+            text: "Blueprint content not found.",
+            icon: "error"
+        });
+        return;
+    }
+
+    // Create a clean version of the blueprint for email
+    const emailContent = blueprintContent.cloneNode(true);
+    
+    // Remove elements that shouldn't be in email
+    const elementsToRemove = emailContent.querySelectorAll('.pdf-hide, button, .no-print');
+    elementsToRemove.forEach(el => el.remove());
+
+    // Get user info for email subject
+    const userName = document.querySelector('h1')?.textContent?.split(',')[0]?.replace('Here\'s Your Personalized Wealth Blueprint', '').trim() || 'Valued Customer';
+
+    fetch("send_blueprint_email.php", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            blueprint_content: emailContent.innerHTML,
+            user_name: userName
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            Swal.fire({
+                title: "Blueprint Sent!",
+                text: "We've emailed your personalized wealth blueprint.",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+        } else {
+            Swal.fire({
+                title: "Oops!",
+                text: data.message || "Something went wrong. Please try again.",
+                icon: "error"
+            });
+        }
+    })
+    .catch((error) => {
+        console.error('Email error:', error);
+        Swal.fire({
+            title: "Error!",
+            text: "Unable to send email. Please try again.",
+            icon: "error"
+        });
+    });
 }
 
 // Utility function to format currency
