@@ -956,11 +956,15 @@ function determineBlueprintData($data) {
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
 
-                    <button id="downloadPdfButton"
+                    <!-- <button id="downloadPdfButton"
                             class="px-8 py-4 bg-indigo-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-indigo-700">
                         Download Blueprint as PDF
-                    </button>
+                    </button> -->
 
+                    <button id="emailBlueprintButton"
+                            class="px-8 py-4 bg-indigo-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-indigo-700 transition duration-300">
+                        Email My Blueprint
+                    </button>
                     <button onclick="openUploadModal()"
                             class="px-8 py-4 bg-violet-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-violet-700">
                         Analyze Another PDF
