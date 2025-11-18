@@ -119,18 +119,20 @@
                         </div>
                     </div>
 
-                    <!-- Back to History Button - Only show when viewing specific analysis -->
-                    <div id="backToHistoryButtons" class="mt-8 text-center flex justify-center gap-4">
+                    <div id="backToHistoryButtons"
+                        class="mt-8 text-center flex flex-col sm:flex-row justify-center gap-4">
+
                         <button id="backToHistory"
-                            class="w-64 bg-gray-600 hover:bg-gray-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors duration-200 shadow-md">
+                            class="w-full sm:w-64 bg-gray-600 hover:bg-gray-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors duration-200 shadow-md">
                             ← View all your previous Expense analysis
                         </button>
 
                         <button onclick="openUploadModal()"
-                            class="w-64 px-8 py-4 bg-green-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105">
+                            class="w-full sm:w-64 px-8 py-4 bg-green-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105">
                             Analyze Another PDF
                         </button>
                     </div>
+
 
                 </div>
 
