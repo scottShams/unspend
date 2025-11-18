@@ -85,5 +85,30 @@ class EmailSender {
             return false;
         }
     }
+
+    public function sendBlueprintEmail($email, $name, $subject, $htmlContent, $textContent = null) {
+        try {
+            $this->mailer->SMTPDebug = 0;   // IMPORTANT: Disable output
+            $this->mailer->clearAddresses();
+            $this->mailer->addAddress($email, $name);
+
+            $this->mailer->Subject = $subject;
+            $this->mailer->isHTML(true);
+            $this->mailer->Body = $htmlContent;
+
+            if ($textContent) {
+                $this->mailer->AltBody = $textContent;
+            } else {
+                $this->mailer->AltBody = strip_tags($htmlContent);
+            }
+
+            return $this->mailer->send();
+            
+        } catch (Exception $e) {
+            error_log("Blueprint email sending failed: " . $this->mailer->ErrorInfo);
+            return false;
+        }
+    }
+
 }
 ?>
